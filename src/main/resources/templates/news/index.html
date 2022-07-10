@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All news</title>
+</head>
+<body>
+<header th:insert="/news/header.html :: header"> </header>
+
+
+<div th:each="news : ${all_news}">
+    <div>
+        Id: <p th:text="${news.getNews().getId()}">Id</p>
+        <h2 th:text="${news.getTitle()}">[[#{title}]]</h2>
+        <p th:text="${news.getBrief()}">[[#{brief}]]</p>
+        <p th:text="${news.getDate()}">[[#{date}]]</p>
+
+        <a th:href="@{/news/{id}(id=${news.getNews().getId()})}">[[#{view}]]</a>
+
+    </div>
+    </br>
+
+</div>
+
+<br/>
+
+</body>
+</html>

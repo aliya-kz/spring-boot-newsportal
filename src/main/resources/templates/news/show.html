@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Show</title>
+</head>
+<body>
+<header th:insert="/news/header.html :: header"> </header>
+
+<h3>[[#{title}]]</h3>
+<p th:text="${news.getTitle()}">VALUE</p>
+
+<h3>[[#{date}]]</h3>
+<p th:text="${news.getDate()}">VALUE</p>
+
+<h3>[[#{title}]]</h3>
+<p th:text="${news.getBrief()}">VALUE</p>
+
+<h3>[[#{content}]]</h3>
+<p th:text="${news.getContent()}">VALUE</p>
+
+
+</body>
+</html>
