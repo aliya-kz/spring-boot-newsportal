@@ -6,8 +6,10 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -18,15 +20,6 @@ import java.util.Objects;
 @Table(name = "localized_news",
         uniqueConstraints=
         @UniqueConstraint(columnNames={"news_id", "language_id"}))
-@NamedNativeQuery(
-        name = "updateLocalizedNews",
-        query = "UPDATE localized_news set title =?, date=?, brief = ?, content = ? where news_id = ? and language_id = ?",
-        resultClass=LocalizedNews.class
-)
-@NamedQuery(
-        name = "selectLocalizedNewsById",
-        query = "select ln from LocalizedNews ln where ln.news.id = :id and ln.language.id= :langId"
-)
 @NoArgsConstructor
 public class LocalizedNews implements Serializable {
 

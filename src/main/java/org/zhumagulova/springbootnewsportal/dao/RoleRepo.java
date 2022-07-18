@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import org.zhumagulova.springbootnewsportal.models.Role;
 
 @Repository
-public interface RoleDao  extends JpaRepository<Role, Long> {
+public interface RoleRepo extends JpaRepository<Role, Long> {
 
 }

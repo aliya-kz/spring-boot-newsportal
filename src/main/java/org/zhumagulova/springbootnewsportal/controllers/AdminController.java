@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@ControllerAdvice
 @Slf4j
 @Controller
 @RequestMapping("/admin")
@@ -87,7 +88,6 @@ public class AdminController {
         newsService.deleteSeveral(newsIds);
         return "redirect:/admin";
     }
-
 
     @ExceptionHandler({NoSuchElementException.class, NullPointerException.class})
     public String noSuchElement(Model model) {

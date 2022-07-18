@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -24,8 +25,10 @@ public class User implements Serializable {
 
     @Column(name = "email")
     @Email
+    @NotEmpty
     private String email;
 
+    @NotEmpty
     @Column(name = "password")
     private String password;
 

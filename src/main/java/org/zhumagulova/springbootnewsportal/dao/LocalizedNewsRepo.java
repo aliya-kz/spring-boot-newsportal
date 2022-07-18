@@ -1,8 +1,6 @@
 package org.zhumagulova.springbootnewsportal.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.zhumagulova.springbootnewsportal.models.LocalizedNews;
 
@@ -19,6 +17,5 @@ public interface LocalizedNewsRepo extends JpaRepository<LocalizedNews, Long> {
 
     LocalizedNews save(LocalizedNews localizedNews);
 
-    @Query("delete from LocalizedNews where news.id=:id and language.id=:languageId")
-    void deleteByNews_IdAndLanguage_Id(@Param("id") long id, @Param ("languageId") long languageId);
+    void deleteByNews_IdAndLanguage_Id(long id, long languageId);
 }
