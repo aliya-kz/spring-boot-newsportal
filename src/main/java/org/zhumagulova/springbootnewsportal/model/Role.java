@@ -1,7 +1,6 @@
-package org.zhumagulova.springbootnewsportal.models;
+package org.zhumagulova.springbootnewsportal.model;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.util.Objects;

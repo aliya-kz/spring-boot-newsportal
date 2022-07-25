@@ -1,20 +1,20 @@
 package org.zhumagulova.springbootnewsportal.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zhumagulova.springbootnewsportal.dao.RoleRepo;
 import org.zhumagulova.springbootnewsportal.dao.UserRepo;
-import org.zhumagulova.springbootnewsportal.models.Role;
-import org.zhumagulova.springbootnewsportal.models.User;
+import org.zhumagulova.springbootnewsportal.model.Role;
+import org.zhumagulova.springbootnewsportal.model.User;
 
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -22,15 +22,13 @@ public class UserServiceImpl implements UserService {
 
     private final RoleRepo roleDao;
 
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private static final Logger logger = LoggerFactory.getLogger("NewsServiceImpl");
-
     @Autowired
-    public UserServiceImpl(UserRepo userDao, RoleRepo roleDao) {
+    public UserServiceImpl(UserRepo userDao, RoleRepo roleDao, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
         this.roleDao = roleDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional

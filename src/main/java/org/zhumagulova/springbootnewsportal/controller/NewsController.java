@@ -1,4 +1,4 @@
-package org.zhumagulova.springbootnewsportal.controllers;
+package org.zhumagulova.springbootnewsportal.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.zhumagulova.springbootnewsportal.models.LocalizedNews;
+import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
 import org.zhumagulova.springbootnewsportal.service.NewsService;
 
 import java.util.List;

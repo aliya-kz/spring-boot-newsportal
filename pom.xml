@@ -14,12 +14,32 @@
     <packaging>war</packaging>
     <name>spring-boot-news-portal</name>
     <description>spring-boot-news-portal</description>
+
     <properties>
         <java.version>11</java.version>
         <testcontainers.version>1.17.3</testcontainers.version>
         <javax-validation.version>2.0.1.Final</javax-validation.version>
+        <jsonwebtoken.version>0.11.5</jsonwebtoken.version>
     </properties>
+
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${jsonwebtoken.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jsonwebtoken.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jsonwebtoken.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>

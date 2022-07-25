@@ -1,5 +1,9 @@
-package org.zhumagulova.springbootnewsportal.models;
+package org.zhumagulova.springbootnewsportal.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,18 +14,20 @@ import java.util.Set;
 
 
 @Entity
-@Table(name="news")
+@Table(name = "news")
 @Data
 @NoArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
 public class News implements Serializable {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO, generator="news_seq_gen")
-    @SequenceGenerator(name="news_seq_gen", sequenceName="news_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "news_seq_gen")
+    @SequenceGenerator(name = "news_seq_gen", sequenceName = "news_sequence", allocationSize = 1)
 
     @Column(name = "id")
     private Long id;
 
-   @OneToMany(mappedBy="news")
+    @OneToMany(mappedBy = "news")
+    @JsonManagedReference
     private Set<LocalizedNews> localizedNewsSet;
 
     public News(Long id) {

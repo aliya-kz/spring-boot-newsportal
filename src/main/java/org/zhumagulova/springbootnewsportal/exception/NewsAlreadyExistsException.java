@@ -1,4 +1,4 @@
-package org.zhumagulova.springbootnewsportal.exceptions;
+package org.zhumagulova.springbootnewsportal.exception;
 
 public class NewsAlreadyExistsException extends Exception{
 

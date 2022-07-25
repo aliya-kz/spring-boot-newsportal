@@ -1,6 +1,10 @@
-package org.zhumagulova.springbootnewsportal.models;
+package org.zhumagulova.springbootnewsportal.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +26,7 @@ public class Language implements Serializable {
     @Size(min = 2, max = 2, message = "Language code should be 2 characters")
     private String code;
 
+    @JsonIgnore
     @OneToMany(mappedBy="language")
     private Set<LocalizedNews> localizedNewsSet;
 

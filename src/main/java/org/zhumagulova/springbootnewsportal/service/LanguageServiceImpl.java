@@ -5,7 +5,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zhumagulova.springbootnewsportal.dao.LanguageRepo;
-import org.zhumagulova.springbootnewsportal.models.Language;
+import org.zhumagulova.springbootnewsportal.model.Language;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -28,7 +28,6 @@ public class LanguageServiceImpl implements LanguageService {
         String langCode = locale.getLanguage();
         return languageRepo.findIdByCode(langCode);
     }
-
 
     @Transactional
     @Override

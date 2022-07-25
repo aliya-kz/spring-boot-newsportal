@@ -1,27 +1,24 @@
 package org.zhumagulova.springbootnewsportal.service;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zhumagulova.springbootnewsportal.dao.LocalizedNewsRepo;
 import org.zhumagulova.springbootnewsportal.dao.NewsRepo;
-import org.zhumagulova.springbootnewsportal.exceptions.NewsAlreadyExistsException;
-import org.zhumagulova.springbootnewsportal.models.Language;
-import org.zhumagulova.springbootnewsportal.models.LocalizedNews;
-import org.zhumagulova.springbootnewsportal.models.News;
+import org.zhumagulova.springbootnewsportal.exception.NewsAlreadyExistsException;
+import org.zhumagulova.springbootnewsportal.model.Language;
+import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
+import org.zhumagulova.springbootnewsportal.model.News;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-
+@Slf4j
 @Service
 public class NewsServiceImpl implements NewsService {
-
-    private static final Logger logger = LoggerFactory.getLogger("NewsServiceImpl");
 
     private final LocalizedNewsRepo localizedNewsRepo;
 
@@ -40,14 +37,14 @@ public class NewsServiceImpl implements NewsService {
     @Transactional
     public List<LocalizedNews> getAllNews() {
         long languageId = languageService.getLanguageIdByLocale();
-        return localizedNewsRepo.findAllByLanguage_Id(languageId);
+        return localizedNewsRepo.findAllByLanguageId(languageId);
     }
 
     @Override
     @Transactional
     public Optional<LocalizedNews> getNewsById(long id) {
         long languageId = languageService.getLanguageIdByLocale();
-        return localizedNewsRepo.findByNews_IdAndLanguage_Id(id, languageId);
+        return localizedNewsRepo.findByNewsIdAndLanguageId(id, languageId);
     }
 
     @Override
@@ -69,27 +66,27 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
-    public void updateNews(LocalizedNews localizedNews, long id) {
+    public LocalizedNews updateNews(LocalizedNews localizedNews, long id) {
         long languageId = languageService.getLanguageIdByLocale();
-        LocalizedNews databaseNews = localizedNewsRepo.findByNews_IdAndLanguage_Id(id, languageId).get();        databaseNews.setTitle(localizedNews.getTitle());
+        LocalizedNews databaseNews = localizedNewsRepo.findByNewsIdAndLanguageId(id, languageId).get();        databaseNews.setTitle(localizedNews.getTitle());
         databaseNews.setBrief(localizedNews.getBrief());
         databaseNews.setContent(localizedNews.getContent());
         databaseNews.setDate(localizedNews.getDate());
-        localizedNewsRepo.save(databaseNews);
+        return localizedNewsRepo.save(databaseNews);
     }
 
     @Override
     @Transactional
     public void delete(long id) {
         long languageId = languageService.getLanguageIdByLocale();
-        localizedNewsRepo.deleteByNews_IdAndLanguage_Id(id, languageId);
+        localizedNewsRepo.deleteByNewsIdAndLanguageId(id, languageId);
     }
 
 
     @Override
     @Transactional
-    public void deleteSeveral(Long[] ids) {
+    public void batchDelete(Long[] ids) {
         long languageId = languageService.getLanguageIdByLocale();
-        Arrays.stream(ids).forEach(id -> localizedNewsRepo.deleteByNews_IdAndLanguage_Id(id, languageId));
+        Arrays.stream(ids).forEach(id -> localizedNewsRepo.deleteByNewsIdAndLanguageId(id, languageId));
     }
 }

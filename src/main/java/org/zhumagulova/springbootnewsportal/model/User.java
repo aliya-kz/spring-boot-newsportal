@@ -1,5 +1,6 @@
-package org.zhumagulova.springbootnewsportal.models;
+package org.zhumagulova.springbootnewsportal.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -28,6 +29,7 @@ public class User implements Serializable {
     @NotEmpty
     private String email;
 
+    @JsonIgnore
     @NotEmpty
     @Column(name = "password")
     private String password;

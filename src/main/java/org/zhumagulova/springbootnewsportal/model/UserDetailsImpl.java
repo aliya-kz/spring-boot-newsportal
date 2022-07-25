@@ -1,4 +1,4 @@
-package org.zhumagulova.springbootnewsportal.models;
+package org.zhumagulova.springbootnewsportal.model;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -8,13 +8,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MyUserDetails implements UserDetails {
+public class UserDetailsImpl implements UserDetails {
 
     private String userName;
     private String password;
     private List<GrantedAuthority> authorities;
 
-    public MyUserDetails(User user) {
+    public UserDetailsImpl(User user) {
         this.userName = user.getEmail();
         this.password = user.getPassword();
         this.authorities = user.getRoles().stream()

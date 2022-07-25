@@ -1,4 +1,4 @@
-package org.zhumagulova.springbootnewsportal.passwordEncoder;
+package org.zhumagulova.springbootnewsportal.security;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;

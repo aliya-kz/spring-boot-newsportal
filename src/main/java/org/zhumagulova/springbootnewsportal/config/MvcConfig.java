@@ -1,5 +1,6 @@
 package org.zhumagulova.springbootnewsportal.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
@@ -15,18 +16,23 @@ import java.util.Locale;
 @EnableWebMvc
 public class MvcConfig implements WebMvcConfigurer {
 
+    @Value("${locale.default}")
+    private String defaultLocale;
+
+    @Value("${locale.paramName}")
+    private String localeParamName;
 
     @Bean
     public LocaleResolver localeResolver(){
         CookieLocaleResolver resolver = new CookieLocaleResolver();
-        resolver.setDefaultLocale(new Locale("en"));
+        resolver.setDefaultLocale(new Locale(defaultLocale));
         return resolver;
     }
 
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
-        lci.setParamName("locale");
+        lci.setParamName(localeParamName);
         return lci;
     }
 

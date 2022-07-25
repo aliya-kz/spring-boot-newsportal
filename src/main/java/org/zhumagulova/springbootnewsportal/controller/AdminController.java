@@ -1,4 +1,4 @@
-package org.zhumagulova.springbootnewsportal.controllers;
+package org.zhumagulova.springbootnewsportal.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.zhumagulova.springbootnewsportal.exceptions.NewsAlreadyExistsException;
-import org.zhumagulova.springbootnewsportal.models.LocalizedNews;
+import org.zhumagulova.springbootnewsportal.exception.NewsAlreadyExistsException;
+import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
 import org.zhumagulova.springbootnewsportal.service.NewsService;
 
 import javax.validation.Valid;
@@ -85,7 +85,7 @@ public class AdminController {
     @DeleteMapping
     public String delete(@RequestParam String[] ids) {
         Long[] newsIds = Arrays.stream(ids).map(id -> Long.parseLong(id)).toArray(Long[]::new);
-        newsService.deleteSeveral(newsIds);
+        newsService.batchDelete(newsIds);
         return "redirect:/admin";
     }
 

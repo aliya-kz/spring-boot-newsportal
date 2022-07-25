@@ -2,48 +2,71 @@ package org.zhumagulova.springbootnewsportal.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.zhumagulova.springbootnewsportal.service.MyUserDetailsService;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.zhumagulova.springbootnewsportal.security.jwt.JwtConfigurer;
+import org.zhumagulova.springbootnewsportal.security.jwt.JwtTokenProvider;
 
-
+@Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    public MyUserDetailsService myUserDetailsService;
+    private final JwtConfigurer jwtConfigurer;
+
+    private final JwtTokenProvider jwtTokenProvider;
+
+    private String endPointRest = "/api/**";
+    private String userEndPoint = "/news/**";
+    private String adminEndPoint = "/admin/**";
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    public SecurityConfig(JwtConfigurer jwtConfigurer, JwtTokenProvider jwtTokenProvider) {
+        this.jwtConfigurer = jwtConfigurer;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf()
                 .disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .authorizeRequests()
                 .antMatchers("/registration").permitAll()
-                .antMatchers("/news/**").permitAll()
-                .antMatchers("/admin/**").hasAuthority("ADMIN")
+                .antMatchers(userEndPoint).permitAll()
+                .antMatchers(adminEndPoint).hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.GET, endPointRest).permitAll()
+                .antMatchers(HttpMethod.DELETE,endPointRest).hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.POST, endPointRest).hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.PATCH, endPointRest).hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.PUT, endPointRest).hasAuthority("ADMIN")
+                .antMatchers("/auth/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .defaultSuccessUrl("/admin")
-                .and()
-                .exceptionHandling().accessDeniedPage("/login")
-                .and()
                 .logout()
-                .permitAll()
-                .logoutSuccessUrl("/login");
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"))
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .deleteCookies("JSESSIONID")
+                .logoutSuccessUrl("/")
+                .and()
+                .apply(jwtConfigurer);
         return httpSecurity.build();
     }
 
-    @Autowired
-    protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(myUserDetailsService).passwordEncoder(passwordEncoder);
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
-
 }

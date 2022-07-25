@@ -4,7 +4,7 @@ package org.zhumagulova.springbootnewsportal.dao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import org.zhumagulova.springbootnewsportal.models.Language;
+import org.zhumagulova.springbootnewsportal.model.Language;
 
 import java.util.Optional;
 

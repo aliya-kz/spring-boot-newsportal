@@ -1,26 +1,29 @@
-package org.zhumagulova.springbootnewsportal.models;
+package org.zhumagulova.springbootnewsportal.model;
 
 
+import com.fasterxml.jackson.annotation.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
 @Data
-
+@Builder
 @Table(name = "localized_news",
         uniqueConstraints=
         @UniqueConstraint(columnNames={"news_id", "language_id"}))
 @NoArgsConstructor
+@AllArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
 public class LocalizedNews implements Serializable {
 
     @Id
@@ -46,6 +49,7 @@ public class LocalizedNews implements Serializable {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @JsonBackReference(value = "id")
     @JoinColumn(name = "news_id")
     private News news;
 
@@ -53,53 +57,6 @@ public class LocalizedNews implements Serializable {
     @JoinColumn(name = "language_id")
     private Language language;
 
-    public static class Builder {
-        private long id;
-        private LocalDate date;
-        private String brief;
-        private String title;
-        private String content;
-        private Language language;
-        private News news;
-
-        public Builder (String title, String brief, String content) {
-            this.title = title;
-            this.brief = brief;
-            this.content = content;
-        }
-
-        public Builder id (long value) {
-            id = value;
-            return this;
-        }
-
-        public Builder date (LocalDate value) {
-            date = value;
-            return this;
-        }
-
-        public Builder news (News value) {
-            news = value;
-            return this;
-        }
-        public Builder language (Language value) {
-            language = value;
-            return this;
-        }
-        public LocalizedNews build () {
-            return new LocalizedNews(this);
-        }
-    }
-
-    private LocalizedNews (Builder builder) {
-        id = builder.id;
-        date = builder.date;
-        title = builder.title;
-        brief = builder.brief;
-        content = builder.content;
-        language = builder.language;
-        news = builder.news;
-    }
 
     @Override
     public boolean equals(Object o) {
