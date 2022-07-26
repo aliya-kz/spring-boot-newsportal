@@ -45,7 +45,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
 
     @Test
     public void getLocalizedNewsById_NewsNotExist_EmptyOptional() {
-      //  assertTrue(newsService.getNewsById(NON_EXISTING_LOCALIZED_NEWS_ID).isEmpty());
+       assertTrue(newsService.getNewsById(NON_EXISTING_LOCALIZED_NEWS_ID).isEmpty());
     }
 
     @Test
@@ -132,4 +132,8 @@ class NewsServiceImplTest extends BaseIntegrationTest {
         assertEquals(initialSize, sizeAfterDeletion + 1);
     }
 
+    @Test
+    public void deleteNews_NewsNotExist_ThrowsException() {
+        assertThrows(NoSuchElementException.class, ()-> newsService.delete(NON_EXISTING_LOCALIZED_NEWS_ID));
+    }
 }

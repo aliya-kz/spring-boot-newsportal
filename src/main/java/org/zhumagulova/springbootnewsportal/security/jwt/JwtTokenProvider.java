@@ -15,8 +15,6 @@ import org.zhumagulova.springbootnewsportal.service.UserDetailsServiceImpl;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.security.Key;
-import java.security.PrivateKey;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashSet;

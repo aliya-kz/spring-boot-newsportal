@@ -3,10 +3,10 @@ package org.zhumagulova.springbootnewsportal.controller.rest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -45,7 +45,7 @@ class AdminRestControllerTest {
     private final static String BRIEF = "Test brief";
     private final static String CONTENT = "Test content";
 
-    @Mock
+    @MockBean
     private NewsService newsService;
 
     @Autowired
@@ -80,7 +80,7 @@ class AdminRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(LOCALIZED_NEWS_OF_SINGLE_LANGUAGE_LIST_SIZE)))
-                .andExpect(jsonPath("$[2].title").value(TITLE));
+                .andExpect(jsonPath("$[1].title").value(TITLE));
     }
 
     @Test
@@ -110,11 +110,9 @@ class AdminRestControllerTest {
     @Test
     void showGetNewNews_NewsWithNullValues_Success() throws Exception {
         mockMvc.perform(get("/api/new")).andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("\"null\""))
-                .andExpect(jsonPath("$.brief").value("\"null\""))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andDo(print());
     }
-
 
 
     @Test
