@@ -59,13 +59,13 @@ public class AdminRestController {
 
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") long id) {
-        newsService.delete(id);
+    public long delete(@PathVariable("id") long id) {
+        return newsService.delete(id);
     }
 
     @DeleteMapping
-    public void batchDelete(@RequestParam String[] ids) {
+    public Long[] batchDelete(@RequestParam String[] ids) {
         Long[] newsIds = Arrays.stream(ids).map(id -> Long.parseLong(id)).toArray(Long[]::new);
-        newsService.batchDelete(newsIds);
+        return newsService.batchDelete(newsIds);
     }
 }

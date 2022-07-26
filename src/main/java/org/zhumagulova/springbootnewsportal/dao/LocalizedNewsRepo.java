@@ -16,5 +16,5 @@ public interface LocalizedNewsRepo extends JpaRepository<LocalizedNews, Long> {
 
     LocalizedNews save(LocalizedNews localizedNews);
 
-    void deleteByNewsIdAndLanguageId(long id, long languageId);
+    long deleteByNewsIdAndLanguageId(long id, long languageId);
 }

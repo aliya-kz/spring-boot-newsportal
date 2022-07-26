@@ -12,7 +12,6 @@ import org.zhumagulova.springbootnewsportal.model.Language;
 import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
 import org.zhumagulova.springbootnewsportal.model.News;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,7 +67,8 @@ public class NewsServiceImpl implements NewsService {
     @Transactional
     public LocalizedNews updateNews(LocalizedNews localizedNews, long id) {
         long languageId = languageService.getLanguageIdByLocale();
-        LocalizedNews databaseNews = localizedNewsRepo.findByNewsIdAndLanguageId(id, languageId).get();        databaseNews.setTitle(localizedNews.getTitle());
+        LocalizedNews databaseNews = localizedNewsRepo.findByNewsIdAndLanguageId(id, languageId).get();
+        databaseNews.setTitle(localizedNews.getTitle());
         databaseNews.setBrief(localizedNews.getBrief());
         databaseNews.setContent(localizedNews.getContent());
         databaseNews.setDate(localizedNews.getDate());
@@ -77,16 +77,28 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
-    public void delete(long id) {
+    public long delete(long id) {
         long languageId = languageService.getLanguageIdByLocale();
-        localizedNewsRepo.deleteByNewsIdAndLanguageId(id, languageId);
+        return localizedNewsRepo.deleteByNewsIdAndLanguageId(id, languageId);
     }
 
 
     @Override
     @Transactional
-    public void batchDelete(Long[] ids) {
+    public Long[] batchDelete(Long[] ids) {
         long languageId = languageService.getLanguageIdByLocale();
-        Arrays.stream(ids).forEach(id -> localizedNewsRepo.deleteByNewsIdAndLanguageId(id, languageId));
+        Long[] newsThatThrowException = new Long[]{};
+        long temporaryId = 0;
+        for (long id : ids) {
+            try {
+                temporaryId = id;
+                localizedNewsRepo.deleteByNewsIdAndLanguageId(id, languageId);
+            } catch (Exception e) {
+                newsThatThrowException = new Long[newsThatThrowException.length + 1];
+                newsThatThrowException[newsThatThrowException.length - 1] = temporaryId;
+            }
+        }
+        return newsThatThrowException;
     }
 }
+

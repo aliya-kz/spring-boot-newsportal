@@ -21,8 +21,8 @@ public interface NewsService {
     LocalizedNews updateNews(LocalizedNews news, long id);
 
     @Transactional
-    void delete(long id);
+    long delete(long id);
 
     @Transactional
-    void batchDelete(Long[] ids);
+    Long[] batchDelete(Long[] ids);
 }

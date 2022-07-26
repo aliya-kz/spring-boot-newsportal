@@ -3,15 +3,16 @@ package org.zhumagulova.springbootnewsportal.controller.rest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import org.zhumagulova.springbootnewsportal.exception.NewsAlreadyExistsException;
 import org.zhumagulova.springbootnewsportal.exception.NewsNotFoundException;
 import org.zhumagulova.springbootnewsportal.model.Language;
@@ -28,12 +29,12 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
 @WithMockUser(username = "admin@admin.com", password = "12345", roles = {"ADMIN"})
 class AdminRestControllerTest {
@@ -47,8 +48,8 @@ class AdminRestControllerTest {
     @Mock
     private NewsService newsService;
 
-    @InjectMocks
-    private AdminRestController adminRestController;
+    @Autowired
+    WebApplicationContext context;
 
     private MockMvc mockMvc;
 
@@ -63,7 +64,10 @@ class AdminRestControllerTest {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(adminRestController).build();
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(springSecurity())
+                .build();
     }
 
     @Test
@@ -106,8 +110,8 @@ class AdminRestControllerTest {
     @Test
     void showGetNewNews_NewsWithNullValues_Success() throws Exception {
         mockMvc.perform(get("/api/new")).andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value(null))
-                .andExpect(jsonPath("$.brief").value(null))
+                .andExpect(jsonPath("$.title").value("\"null\""))
+                .andExpect(jsonPath("$.brief").value("\"null\""))
                 .andDo(print());
     }
 
@@ -128,11 +132,10 @@ class AdminRestControllerTest {
         when(newsService.createNews(mockNews, ID)).thenThrow(new NewsAlreadyExistsException(ID));
 
         mockMvc.perform(post("/api/new"))
-                .andExpect(status().isBadGateway())
+                .andExpect(status().is5xxServerError())
                 .andExpect(content().string("\"News with id 1 already exist\""))
                 .andDo(print());
     }
-
 
     @Test
     void updateLocalizedNews_Success() throws Exception {
@@ -141,6 +144,54 @@ class AdminRestControllerTest {
         mockMvc.perform(post("/api/{id}/edit", ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(mockNews.getTitle()))
+                .andDo(print());
+    }
+
+    @Test
+    void updateLocalizedNews_NewsWithIdNotExist_ThrowsException() throws Exception {
+        when(newsService.updateNews(mockNews, ID)).thenThrow(new NullPointerException());
+
+        mockMvc.perform(post("/api/{id}/edit", ID))
+                .andExpect(status().is5xxServerError())
+                .andExpect(content().string("\"No entity found\""))
+                .andDo(print());
+    }
+
+    @Test
+    void deleteLocalizedNews_Success() throws Exception {
+        when(newsService.delete(ID)).thenReturn(1L);
+
+        mockMvc.perform(delete("/api/{id}/edit", ID))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    void deleteLocalizedNews_NewsWithIdNotExist_ThrowsException() throws Exception {
+        when(newsService.delete(ID)).thenReturn(0L);
+
+        mockMvc.perform(delete("/api/{id}/edit", ID))
+                .andExpect(status().is5xxServerError())
+                .andDo(print());
+    }
+
+    @Test
+    void deleteBatch_Success() throws Exception {
+        Long [] toBeDeleted = {1L,2L,3L};
+        when(newsService.batchDelete(toBeDeleted)).thenReturn(new Long[]{1L});
+
+        mockMvc.perform(delete("/api"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("\"{1}\""))
+                .andDo(print());
+    }
+
+    @Test
+    void deleteBatch_NewsWithIdNotExist_ThrowsException() throws Exception {
+        when(newsService.getNewsById(ID)).thenThrow(new NullPointerException());
+
+        mockMvc.perform(delete("/api/{id}/edit", ID))
+                .andExpect(status().isNotFound())
                 .andDo(print());
     }
 

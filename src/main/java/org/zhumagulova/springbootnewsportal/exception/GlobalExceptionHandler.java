@@ -1,6 +1,7 @@
 package org.zhumagulova.springbootnewsportal.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.service.NullServiceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
@@ -27,9 +28,9 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseBody
-    @ExceptionHandler({NoSuchElementException.class})
+    @ExceptionHandler({NoSuchElementException.class, NullPointerException.class})
     public String catchNoSuchElementException(NoSuchElementException e) {
-        return e.getMessage();
+        return "No entity found";
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
