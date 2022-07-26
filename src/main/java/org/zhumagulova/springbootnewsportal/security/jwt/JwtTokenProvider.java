@@ -1,6 +1,8 @@
 package org.zhumagulova.springbootnewsportal.security.jwt;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,11 +15,14 @@ import org.zhumagulova.springbootnewsportal.service.UserDetailsServiceImpl;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.security.Key;
+import java.security.PrivateKey;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+@Slf4j
 @Component
 public class JwtTokenProvider {
 
@@ -56,7 +61,8 @@ public class JwtTokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                //.signWith (secretKey, SignatureAlgorithm.HS256)
+                .signWith(Keys.secretKeyFor(SignatureAlgorithm.HS256))
                 .compact();
     }
 
@@ -80,6 +86,7 @@ public class JwtTokenProvider {
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey.getBytes()).build().parseClaimsJws(token);
+            log.info("printing dates: current " + new Date() + ", expiration : " + claims.getBody().getExpiration());
             if (claims.getBody().getExpiration().before(new Date())) {
                 return false;
             }

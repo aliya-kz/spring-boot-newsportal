@@ -59,15 +59,14 @@ class AdminControllerTest {
 
     @Test
     void testLoadShowPage() throws Exception {
-    /*    long id = 1;
+        long id = 1;
         Optional <LocalizedNews> localizedNews = Optional.of(new LocalizedNews());
-
         when(newsService.getNewsById(id)).thenReturn(localizedNews);
 
         mockMvc.perform(get("/admin/1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/show"))
-                .andExpect(model().attribute("news", instanceOf(LocalizedNews.class)));*/
+                .andExpect(model().attribute("news", instanceOf(LocalizedNews.class)));
     }
 
     @Test
@@ -87,6 +86,5 @@ class AdminControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin"));
     }
-
 
 }

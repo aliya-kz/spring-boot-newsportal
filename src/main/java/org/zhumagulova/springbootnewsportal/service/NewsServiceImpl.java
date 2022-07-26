@@ -60,7 +60,7 @@ public class NewsServiceImpl implements NewsService {
         try {
             return localizedNewsRepo.save(localizedNews);
         } catch (Exception e) {
-            throw new NewsAlreadyExistsException("news_exist");
+            throw new NewsAlreadyExistsException(newsId);
         }
     }
 

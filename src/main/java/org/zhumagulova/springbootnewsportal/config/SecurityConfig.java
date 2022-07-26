@@ -13,7 +13,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.zhumagulova.springbootnewsportal.security.jwt.JwtConfigurer;
-import org.zhumagulova.springbootnewsportal.security.jwt.JwtTokenProvider;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -22,16 +21,13 @@ public class SecurityConfig {
 
     private final JwtConfigurer jwtConfigurer;
 
-    private final JwtTokenProvider jwtTokenProvider;
-
     private String endPointRest = "/api/**";
     private String userEndPoint = "/news/**";
     private String adminEndPoint = "/admin/**";
 
     @Autowired
-    public SecurityConfig(JwtConfigurer jwtConfigurer, JwtTokenProvider jwtTokenProvider) {
+    public SecurityConfig(JwtConfigurer jwtConfigurer) {
         this.jwtConfigurer = jwtConfigurer;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Bean

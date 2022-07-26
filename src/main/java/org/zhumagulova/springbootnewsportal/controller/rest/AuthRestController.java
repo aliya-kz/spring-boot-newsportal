@@ -42,7 +42,7 @@ public class AuthRestController {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
             User user = userService.findUserByEmail(request.getEmail()).orElseThrow(() -> new UserNotFoundException("User does not exist"));
-            //TODO
+
             String token = jwtTokenProvider.createToken(request.getEmail(), user.getRoles());
             Map<Object, Object> response = new HashMap<>();
             response.put("email", request.getEmail());
@@ -58,5 +58,4 @@ public class AuthRestController {
         SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
         securityContextLogoutHandler.logout(request, response, null);
     }
-
 }

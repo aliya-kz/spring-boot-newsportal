@@ -89,16 +89,4 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @ExceptionHandler({NoSuchElementException.class, NullPointerException.class})
-    public String noSuchElement(Model model) {
-        model.addAttribute("error_msg", "no_element");
-        return "redirect:/error";
-    }
-
-    @ExceptionHandler({NewsAlreadyExistsException.class})
-    public String newsAlreadyExist (Model model) {
-        model.addAttribute("error_msg", "news_exist");
-        return "redirect:/error";
-    }
-
 }

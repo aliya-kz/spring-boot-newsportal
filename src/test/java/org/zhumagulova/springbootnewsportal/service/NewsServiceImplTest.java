@@ -39,8 +39,8 @@ class NewsServiceImplTest extends BaseIntegrationTest {
 
     @Test
     public void getLocalizedNewsById_NewsExist_True() {
-      //  Optional<LocalizedNews> news = newsService.getNewsById(EXISTING_LOCALIZED_NEWS_ID);
-       // Assertions.assertNotNull(news.get());
+        Optional<LocalizedNews> news = newsService.getNewsById(EXISTING_LOCALIZED_NEWS_ID);
+        Assertions.assertNotNull(news.get());
     }
 
     @Test
@@ -102,8 +102,8 @@ class NewsServiceImplTest extends BaseIntegrationTest {
 
         newsService.updateNews(localizedNews, EXISTING_NEWS_ID);
 
-       // LocalizedNews databaseNews = newsService.getNewsById(EXISTING_NEWS_ID).get();
-       // assertEquals(TITLE, databaseNews.getTitle());
+        LocalizedNews databaseNews = newsService.getNewsById(EXISTING_NEWS_ID).get();
+        assertEquals(TITLE, databaseNews.getTitle());
     }
 
     @Test
