@@ -1,7 +1,6 @@
 package org.zhumagulova.springbootnewsportal.security.jwt;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,8 +13,9 @@ import org.zhumagulova.springbootnewsportal.model.Role;
 import org.zhumagulova.springbootnewsportal.service.UserDetailsServiceImpl;
 
 import javax.annotation.PostConstruct;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Base64;
+import java.security.Key;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,6 +36,8 @@ public class JwtTokenProvider {
 
     private final PasswordEncoder passwordEncoder;
 
+    private Key signingKey;
+
     @Autowired
     public JwtTokenProvider(UserDetailsServiceImpl appUserDetailsService, PasswordEncoder passwordEncoder) {
         this.userDetailsServiceImpl = appUserDetailsService;
@@ -44,7 +46,7 @@ public class JwtTokenProvider {
 
     @PostConstruct
     protected void init() {
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+        signingKey = new SecretKeySpec(secretKey.getBytes(), SignatureAlgorithm.HS256.getJcaName());
     }
 
     public String createToken(String username, Set<Role> roles) {
@@ -59,8 +61,7 @@ public class JwtTokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                //.signWith (secretKey, SignatureAlgorithm.HS256)
-                .signWith(Keys.secretKeyFor(SignatureAlgorithm.HS256))
+                .signWith(signingKey)
                 .compact();
     }
 
@@ -70,21 +71,20 @@ public class JwtTokenProvider {
     }
 
     public String getUsername(String token) {
-        return Jwts.parserBuilder().setSigningKey(secretKey.getBytes()).build().parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parserBuilder().setSigningKey(signingKey).build().parseClaimsJws(token).getBody().getSubject();
     }
 
     public String resolveToken(HttpServletRequest req) {
         String bearerToken = req.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer_")) {
-            return bearerToken.substring(7, bearerToken.length());
+            return bearerToken.substring(7);
         }
         return null;
     }
 
     public boolean validateToken(String token) {
         try {
-            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey.getBytes()).build().parseClaimsJws(token);
-            log.info("printing dates: current " + new Date() + ", expiration : " + claims.getBody().getExpiration());
+            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(signingKey).build().parseClaimsJws(token);
             if (claims.getBody().getExpiration().before(new Date())) {
                 return false;
             }

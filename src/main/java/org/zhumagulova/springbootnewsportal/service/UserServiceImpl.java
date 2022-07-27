@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zhumagulova.springbootnewsportal.dao.RoleRepo;
 import org.zhumagulova.springbootnewsportal.dao.UserRepo;
 import org.zhumagulova.springbootnewsportal.model.Role;
 import org.zhumagulova.springbootnewsportal.model.User;
@@ -20,14 +19,11 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepo userDao;
 
-    private final RoleRepo roleDao;
-
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepo userDao, RoleRepo roleDao, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepo userDao, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
-        this.roleDao = roleDao;
         this.passwordEncoder = passwordEncoder;
     }
 
