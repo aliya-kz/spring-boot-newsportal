@@ -21,9 +21,10 @@ public class SecurityConfig {
 
     private final JwtConfigurer jwtConfigurer;
 
-    private String endPointRest = "/api/**";
-    private String userEndPoint = "/news/**";
-    private String adminEndPoint = "/admin/**";
+    private static final String END_POINT_REST = "/api/**";
+    private static final String USER_END_POINT = "/news/**";
+    private static final String ADMIN_END_POINT = "/admin/**";
+    private static final String ADMIN = "ADMIN";
 
     @Autowired
     public SecurityConfig(JwtConfigurer jwtConfigurer) {
@@ -39,13 +40,13 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/registration").permitAll()
-                .antMatchers(userEndPoint).permitAll()
-                .antMatchers(adminEndPoint).hasAuthority("ADMIN")
-                .antMatchers(HttpMethod.GET, endPointRest).permitAll()
-                .antMatchers(HttpMethod.DELETE,endPointRest).hasAuthority("ADMIN")
-                .antMatchers(HttpMethod.POST, endPointRest).hasAuthority("ADMIN")
-                .antMatchers(HttpMethod.PATCH, endPointRest).hasAuthority("ADMIN")
-                .antMatchers(HttpMethod.PUT, endPointRest).hasAuthority("ADMIN")
+                .antMatchers(USER_END_POINT).permitAll()
+                .antMatchers(ADMIN_END_POINT).hasAuthority(ADMIN)
+                .antMatchers(HttpMethod.GET, END_POINT_REST).permitAll()
+                .antMatchers(HttpMethod.DELETE, END_POINT_REST).hasAuthority(ADMIN)
+                .antMatchers(HttpMethod.POST, END_POINT_REST).hasAuthority(ADMIN)
+                .antMatchers(HttpMethod.PATCH, END_POINT_REST).hasAuthority(ADMIN)
+                .antMatchers(HttpMethod.PUT, END_POINT_REST).hasAuthority(ADMIN)
                 .antMatchers("/auth/login").permitAll()
                 .anyRequest().authenticated()
                 .and()

@@ -3,6 +3,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
 
@@ -10,7 +11,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Entity
 @Table(name = "roles")
-public class Role {
+public class Role implements Serializable {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO, generator="roles_seq_gen")

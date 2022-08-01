@@ -2,8 +2,10 @@ package org.zhumagulova.springbootnewsportal.service;
 
 
 import org.springframework.transaction.annotation.Transactional;
+import org.zhumagulova.springbootnewsportal.exception.BatchDeleteRolledBackException;
 import org.zhumagulova.springbootnewsportal.exception.NewsAlreadyExistsException;
 
+import org.zhumagulova.springbootnewsportal.exception.NewsNotFoundException;
 import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
 
 import java.util.List;
@@ -18,11 +20,11 @@ public interface NewsService {
 
     LocalizedNews createNews(LocalizedNews news, long newsId) throws NewsAlreadyExistsException;
 
-    LocalizedNews updateNews(LocalizedNews news, long id);
+    LocalizedNews updateNews(LocalizedNews news, long id) throws NewsNotFoundException;
 
     @Transactional
-    long delete(long id);
+    void delete(long id) throws NewsNotFoundException;
 
     @Transactional
-    Long[] batchDelete(Long[] ids);
+    long[] batchDelete(long[] ids) throws BatchDeleteRolledBackException;
 }

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.zhumagulova.springbootnewsportal.model.Role;
 import org.zhumagulova.springbootnewsportal.service.UserDetailsServiceImpl;
@@ -34,14 +33,11 @@ public class JwtTokenProvider {
 
     private final UserDetailsServiceImpl userDetailsServiceImpl;
 
-    private final PasswordEncoder passwordEncoder;
-
     private Key signingKey;
 
     @Autowired
-    public JwtTokenProvider(UserDetailsServiceImpl appUserDetailsService, PasswordEncoder passwordEncoder) {
+    public JwtTokenProvider(UserDetailsServiceImpl appUserDetailsService) {
         this.userDetailsServiceImpl = appUserDetailsService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @PostConstruct
@@ -75,7 +71,7 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest req) {
-        String bearerToken = req.getHeader("Authorization");
+        String bearerToken = req.getHeader(authorizationHeader);
         if (bearerToken != null && bearerToken.startsWith("Bearer_")) {
             return bearerToken.substring(7);
         }
@@ -85,10 +81,7 @@ public class JwtTokenProvider {
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(signingKey).build().parseClaimsJws(token);
-            if (claims.getBody().getExpiration().before(new Date())) {
-                return false;
-            }
-            return true;
+            return (!claims.getBody().getExpiration().before(new Date()));
         } catch (JwtException | IllegalArgumentException e) {
             throw new JwtAuthenticationException("JWT token is expired or invalid");
         }
@@ -96,11 +89,7 @@ public class JwtTokenProvider {
 
     private Set<String> getRoleNames(Set<Role> userRoles) {
         Set<String> result = new HashSet<>();
-
-        userRoles.forEach(role -> {
-            result.add(role.getName());
-        });
-
+        userRoles.forEach(role -> result.add(role.getName()));
         return result;
     }
 }

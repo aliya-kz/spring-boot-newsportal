@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.zhumagulova.springbootnewsportal.exception.NewsNotFoundException;
 import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
 import org.zhumagulova.springbootnewsportal.service.NewsService;
 
@@ -34,8 +35,8 @@ public class NewsController {
     }
 
     @GetMapping("/{id}")
-    public String show(@PathVariable("id") long id, Model model) {
-        LocalizedNews news = newsService.getNewsById(id).get();
+    public String show(@PathVariable("id") long id, Model model) throws NewsNotFoundException {
+        LocalizedNews news = newsService.getNewsById(id).orElseThrow(()-> new NewsNotFoundException(id));
         model.addAttribute("news", news);
         return "news/show";
     }

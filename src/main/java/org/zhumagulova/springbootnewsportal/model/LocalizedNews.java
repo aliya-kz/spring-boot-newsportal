@@ -1,7 +1,6 @@
 package org.zhumagulova.springbootnewsportal.model;
 
 
-import com.fasterxml.jackson.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,16 +18,15 @@ import java.util.Objects;
 @Data
 @Builder
 @Table(name = "localized_news",
-        uniqueConstraints=
-        @UniqueConstraint(columnNames={"news_id", "language_id"}))
+        uniqueConstraints =
+        @UniqueConstraint(columnNames = {"news_id", "language_id"}))
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
 public class LocalizedNews implements Serializable {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO, generator="localized_news_seq_gen")
-    @SequenceGenerator(name="localized_news_seq_gen", sequenceName="localized_news_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "localized_news_seq_gen")
+    @SequenceGenerator(name = "localized_news_seq_gen", sequenceName = "localized_news_sequence", allocationSize = 1)
     private long id;
 
     @Column(name = "date")
@@ -49,7 +47,6 @@ public class LocalizedNews implements Serializable {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    @JsonBackReference(value = "id")
     @JoinColumn(name = "news_id")
     private News news;
 

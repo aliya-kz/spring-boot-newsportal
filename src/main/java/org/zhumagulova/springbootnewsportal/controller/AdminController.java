@@ -7,14 +7,15 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.zhumagulova.springbootnewsportal.exception.BatchDeleteRolledBackException;
 import org.zhumagulova.springbootnewsportal.exception.NewsAlreadyExistsException;
+import org.zhumagulova.springbootnewsportal.exception.NewsNotFoundException;
 import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
 import org.zhumagulova.springbootnewsportal.service.NewsService;
 
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @ControllerAdvice
 @Slf4j
@@ -37,8 +38,8 @@ public class AdminController {
     }
 
     @GetMapping("/{id}")
-    public String show(@PathVariable("id") long id, Model model) {
-        LocalizedNews news = newsService.getNewsById(id).get();
+    public String show(@PathVariable("id") long id, Model model) throws NewsNotFoundException {
+        LocalizedNews news = newsService.getNewsById(id).orElseThrow(() -> new NewsNotFoundException(id));
         model.addAttribute("news", news);
         return "admin/show";
     }
@@ -61,14 +62,15 @@ public class AdminController {
     }
 
     @GetMapping("/{id}/edit")
-    public String edit(Model model, @PathVariable("id") long id) {
-        model.addAttribute("news", newsService.getNewsById(id).get());
+    public String edit(Model model, @PathVariable("id") long id) throws NewsNotFoundException {
+        LocalizedNews news = newsService.getNewsById(id).orElseThrow(()->new NewsNotFoundException(id));
+        model.addAttribute("news", news);
         return "admin/edit";
     }
 
     @PatchMapping("/{id}/edit")
     public String update(@PathVariable("id") long id, @Valid @ModelAttribute("news") LocalizedNews news,
-                         BindingResult bindingResult) {
+                         BindingResult bindingResult) throws NewsNotFoundException {
         if (bindingResult.hasErrors()) {
             return "admin/edit";
         }
@@ -77,14 +79,14 @@ public class AdminController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteOneNews(@PathVariable("id") long id) {
+    public String deleteOneNews(@PathVariable("id") long id) throws NewsNotFoundException {
         newsService.delete(id);
         return "redirect:/admin";
     }
 
     @DeleteMapping
-    public String delete(@RequestParam String[] ids) {
-        Long[] newsIds = Arrays.stream(ids).map(id -> Long.parseLong(id)).toArray(Long[]::new);
+    public String delete(@RequestParam String[] ids) throws BatchDeleteRolledBackException {
+        long[] newsIds = Arrays.stream(ids).mapToLong(Long::parseLong).toArray();
         newsService.batchDelete(newsIds);
         return "redirect:/admin";
     }

@@ -12,9 +12,11 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.zhumagulova.springbootnewsportal.model.Language;
 import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
 import org.zhumagulova.springbootnewsportal.service.NewsService;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +41,19 @@ class AdminControllerTest {
 
     private MockMvc mockMvc;
 
+    private final static String TITLE = "Test title";
+    private final static String BRIEF = "Test brief";
+    private final static String CONTENT = "Test content";
+    private final static long ID = 1;
+
+    LocalizedNews mockNews = LocalizedNews.builder()
+            .title(TITLE)
+            .brief(BRIEF)
+            .content(CONTENT)
+            .date(LocalDate.now())
+            .language(new Language(ID))
+            .build();
+
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
@@ -48,7 +63,7 @@ class AdminControllerTest {
     @Test
     void testLoadIndexPage() throws Exception {
         List<LocalizedNews> newsList = new ArrayList<>();
-        newsList.add(new LocalizedNews());
+        newsList.add(mockNews);
         newsList.add(new LocalizedNews());
 
         when(newsService.getAllNews()).thenReturn(newsList);
@@ -62,8 +77,8 @@ class AdminControllerTest {
     @Test
     void testLoadShowPage() throws Exception {
         long id = 1;
-        Optional <LocalizedNews> localizedNews = Optional.of(new LocalizedNews());
-        when(newsService.getNewsById(id)).thenReturn(localizedNews);
+        Optional <LocalizedNews> localizedNews = Optional.of(mockNews);
+        when(newsService.getNewsById(id).get()).thenReturn(mockNews);
 
         mockMvc.perform(get("/admin/1"))
                 .andExpect(status().isOk())

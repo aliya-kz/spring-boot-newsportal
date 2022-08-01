@@ -7,12 +7,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zhumagulova.springbootnewsportal.dao.LocalizedNewsRepo;
 import org.zhumagulova.springbootnewsportal.dao.NewsRepo;
+import org.zhumagulova.springbootnewsportal.exception.BatchDeleteRolledBackException;
 import org.zhumagulova.springbootnewsportal.exception.NewsAlreadyExistsException;
+import org.zhumagulova.springbootnewsportal.exception.NewsNotFoundException;
 import org.zhumagulova.springbootnewsportal.model.Language;
 import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
 import org.zhumagulova.springbootnewsportal.model.News;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Slf4j
@@ -49,25 +52,27 @@ public class NewsServiceImpl implements NewsService {
     @Override
     @Transactional
     public LocalizedNews createNews(LocalizedNews localizedNews, long newsId) throws NewsAlreadyExistsException {
-        News news = new News(newsId);
-        if (newsId == 0) {
-            news = newsRepo.save(news);
-        }
-        localizedNews.setNews(news);
-        Language language = languageService.getLanguageByLocale().get();
-        localizedNews.setLanguage(language);
-        try {
-            return localizedNewsRepo.save(localizedNews);
-        } catch (Exception e) {
+        long languageId = languageService.getLanguageIdByLocale();
+        Optional <LocalizedNews> existingNews = localizedNewsRepo.findByNewsIdAndLanguageId(newsId, languageId);
+        if (newsId!= 0 && existingNews.isPresent()) {
             throw new NewsAlreadyExistsException(newsId);
         }
+        News news = new News(newsId);
+        news = newsRepo.save(news);
+
+        localizedNews.setNews(news);
+        Language language = languageService.getLanguageByLocale().orElseThrow(()-> new NoSuchElementException("No language found"));
+        localizedNews.setLanguage(language);
+
+        return localizedNewsRepo.save(localizedNews);
     }
 
     @Override
     @Transactional
-    public LocalizedNews updateNews(LocalizedNews localizedNews, long id) {
+    public LocalizedNews updateNews(LocalizedNews localizedNews, long id) throws NewsNotFoundException {
         long languageId = languageService.getLanguageIdByLocale();
-        LocalizedNews databaseNews = localizedNewsRepo.findByNewsIdAndLanguageId(id, languageId).get();
+        LocalizedNews databaseNews = localizedNewsRepo.findByNewsIdAndLanguageId(id, languageId)
+                .orElseThrow(() -> new NewsNotFoundException(id));
         databaseNews.setTitle(localizedNews.getTitle());
         databaseNews.setBrief(localizedNews.getBrief());
         databaseNews.setContent(localizedNews.getContent());
@@ -77,24 +82,28 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
-    public long delete(long id) {
+    public void delete(long id) throws NewsNotFoundException {
         long languageId = languageService.getLanguageIdByLocale();
-        return localizedNewsRepo.deleteByNewsIdAndLanguageId(id, languageId);
-    }
 
+        localizedNewsRepo.findByNewsIdAndLanguageId(id, languageId)
+                .orElseThrow(() -> new NewsNotFoundException(id));
+
+        localizedNewsRepo.deleteByNewsIdAndLanguageId(id, languageId);
+    }
 
     @Override
     @Transactional
-    public Long[] batchDelete(Long[] ids) {
+    public long[] batchDelete(long[] ids) throws BatchDeleteRolledBackException {
         long languageId = languageService.getLanguageIdByLocale();
-        Long[] newsThatThrowException = new Long[]{};
+        long[] newsThatThrowException = new long[]{};
         long temporaryId = 0;
         for (long id : ids) {
             try {
                 temporaryId = id;
+                localizedNewsRepo.findByNewsIdAndLanguageId(id, languageId).orElseThrow(Exception::new);
                 localizedNewsRepo.deleteByNewsIdAndLanguageId(id, languageId);
             } catch (Exception e) {
-                newsThatThrowException = new Long[newsThatThrowException.length + 1];
+                newsThatThrowException = new long[newsThatThrowException.length + 1];
                 newsThatThrowException[newsThatThrowException.length - 1] = temporaryId;
             }
         }

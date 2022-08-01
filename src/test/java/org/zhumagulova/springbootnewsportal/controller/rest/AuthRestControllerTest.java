@@ -12,7 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.zhumagulova.springbootnewsportal.dto.AuthenticationRequestDto;
+import org.zhumagulova.springbootnewsportal.dto.AuthenticationRequest;
 import org.zhumagulova.springbootnewsportal.model.Role;
 import org.zhumagulova.springbootnewsportal.model.User;
 import org.zhumagulova.springbootnewsportal.security.jwt.JwtTokenProvider;
@@ -57,7 +57,7 @@ class AuthRestControllerTest {
     }
     @Test
     void authenticate() throws Exception {
-        AuthenticationRequestDto request = new AuthenticationRequestDto();
+        AuthenticationRequest request = new AuthenticationRequest();
         request.setEmail("email@email.com");
         request.setPassword("password");
 

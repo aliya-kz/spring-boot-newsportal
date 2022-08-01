@@ -20,8 +20,4 @@ public class UserPasswordEncoder implements PasswordEncoder {
     public boolean matches(CharSequence rawPassword, String encodedPassword) {
         return passwordEncoder().matches(rawPassword, encodedPassword);
     }
-
-    public static void main(String[] args) {
-        System.out.println(passwordEncoder().matches("12345", "$2a$10$3TLjSfivla69omi8M0bAGeu0QNpaSe/G5Y.IMOnasUlqYw9yrnuwC"));
-    }
 }
