@@ -26,6 +26,7 @@ public class GlobalExceptionHandler {
         return new MethodArgumentNotValidResponse(exception);
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     @ExceptionHandler({NewsNotFoundException.class})
     public CustomResponse catchNewsNotFoundException(NewsNotFoundException exception) {
@@ -33,21 +34,25 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler({NoSuchElementException.class})
     public CustomResponse catchNoSuchElementException(NoSuchElementException exception) {
         return new CustomResponse(exception);
     }
 
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler({BadCredentialsException.class})
     public CustomResponse badCredentials(BadCredentialsException exception) {
         return new CustomResponse(exception);
     }
 
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler({NewsAlreadyExistsException.class})
     public CustomResponse newsAlreadyExist(NewsAlreadyExistsException exception) {
         return new CustomResponse(exception);
     }
 
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
     @ExceptionHandler({BatchDeleteRolledBackException.class})
     public CustomResponse catchBatchDeleteException(BatchDeleteRolledBackException exception) {

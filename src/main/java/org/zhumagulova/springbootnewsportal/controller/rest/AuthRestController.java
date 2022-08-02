@@ -1,5 +1,7 @@
 package org.zhumagulova.springbootnewsportal.controller.rest;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/auth")
+@Api("Authorization controller")
 public class AuthRestController {
 
     private final AuthenticationManager authenticationManager;
@@ -36,6 +39,7 @@ public class AuthRestController {
     }
 
     @PostMapping("/login")
+    @ApiOperation("Log in by email and password")
     public AuthenticationResponse authenticate(@RequestBody AuthenticationRequest request) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
@@ -50,6 +54,7 @@ public class AuthRestController {
     }
 
     @PostMapping("/logout")
+    @ApiOperation("Log out")
     public void logout(HttpServletRequest request, HttpServletResponse response) {
         SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
         securityContextLogoutHandler.logout(request, response, null);

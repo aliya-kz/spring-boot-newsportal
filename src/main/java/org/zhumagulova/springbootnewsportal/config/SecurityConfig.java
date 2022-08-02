@@ -26,6 +26,18 @@ public class SecurityConfig {
     private static final String ADMIN_END_POINT = "/admin/**";
     private static final String ADMIN = "ADMIN";
 
+    private static final String[] SWAGGER_WHITELIST = {
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            "/v3/api-docs/**",
+            "/swagger-ui/**"
+    };
+
     @Autowired
     public SecurityConfig(JwtConfigurer jwtConfigurer) {
         this.jwtConfigurer = jwtConfigurer;
@@ -40,6 +52,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/registration").permitAll()
+                .antMatchers(SWAGGER_WHITELIST).permitAll()
                 .antMatchers(USER_END_POINT).permitAll()
                 .antMatchers(ADMIN_END_POINT).hasAuthority(ADMIN)
                 .antMatchers(HttpMethod.GET, END_POINT_REST).permitAll()
