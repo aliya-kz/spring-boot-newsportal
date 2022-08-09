@@ -1,4 +1,4 @@
-package org.zhumagulova.springbootnewsportal.controller.rest;
+package org.zhumagulova.springbootnewsportal.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.zhumagulova.springbootnewsportal.dto.AuthenticationRequest;
+import org.zhumagulova.springbootnewsportal.dto.RegistrationRequest;
+import org.zhumagulova.springbootnewsportal.exception.PasswordIncorrectException;
 import org.zhumagulova.springbootnewsportal.exception.UserNotFoundException;
 import org.zhumagulova.springbootnewsportal.model.response.AuthenticationResponse;
 import org.zhumagulova.springbootnewsportal.model.User;
@@ -20,10 +22,11 @@ import org.zhumagulova.springbootnewsportal.service.UserService;
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
-@Api("Authorization controller")
+@Api("Authentication controller")
 public class AuthRestController {
 
     private final AuthenticationManager authenticationManager;
@@ -58,5 +61,15 @@ public class AuthRestController {
     public void logout(HttpServletRequest request, HttpServletResponse response) {
         SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
         securityContextLogoutHandler.logout(request, response, null);
+    }
+
+    @PostMapping("/signup")
+    @ApiOperation("Register new user")
+    public void signup(@RequestBody @Valid RegistrationRequest request) throws PasswordIncorrectException {
+        if (!request.getConfirmPassword().equals(request.getPassword())) {
+            throw new PasswordIncorrectException("Passwords do not match");
+        }
+        User user = request.toUser();
+        userService.save(user);
     }
 }

@@ -21,9 +21,8 @@ public class SecurityConfig {
 
     private final JwtConfigurer jwtConfigurer;
 
-    private static final String END_POINT_REST = "/api/**";
-    private static final String USER_END_POINT = "/news/**";
-    private static final String ADMIN_END_POINT = "/admin/**";
+    private static final String AUTH_END_POINT = "/auth/**";
+    private static final String NEWS_END_POINT = "/api/**";
     private static final String ADMIN = "ADMIN";
 
     private static final String[] SWAGGER_WHITELIST = {
@@ -51,20 +50,17 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/registration").permitAll()
                 .antMatchers(SWAGGER_WHITELIST).permitAll()
-                .antMatchers(USER_END_POINT).permitAll()
-                .antMatchers(ADMIN_END_POINT).hasAuthority(ADMIN)
-                .antMatchers(HttpMethod.GET, END_POINT_REST).permitAll()
-                .antMatchers(HttpMethod.DELETE, END_POINT_REST).hasAuthority(ADMIN)
-                .antMatchers(HttpMethod.POST, END_POINT_REST).hasAuthority(ADMIN)
-                .antMatchers(HttpMethod.PATCH, END_POINT_REST).hasAuthority(ADMIN)
-                .antMatchers(HttpMethod.PUT, END_POINT_REST).hasAuthority(ADMIN)
-                .antMatchers("/auth/login").permitAll()
+                .antMatchers(HttpMethod.GET, NEWS_END_POINT).permitAll()
+                .antMatchers(HttpMethod.DELETE, NEWS_END_POINT).hasAuthority(ADMIN)
+                .antMatchers(HttpMethod.POST, NEWS_END_POINT).hasAuthority(ADMIN)
+                .antMatchers(HttpMethod.PATCH, NEWS_END_POINT).hasAuthority(ADMIN)
+                .antMatchers(HttpMethod.PUT, NEWS_END_POINT).hasAuthority(ADMIN)
+                .antMatchers(AUTH_END_POINT).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"))
+                .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout", "POST"))
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
                 .deleteCookies("JSESSIONID")

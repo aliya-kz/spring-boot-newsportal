@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.zhumagulova.springbootnewsportal.exception.BatchDeleteRolledBackException;
 import org.zhumagulova.springbootnewsportal.exception.NewsAlreadyExistsException;
 import org.zhumagulova.springbootnewsportal.exception.NewsNotFoundException;
+import org.zhumagulova.springbootnewsportal.exception.PasswordIncorrectException;
 import org.zhumagulova.springbootnewsportal.model.response.CustomResponse;
 import org.zhumagulova.springbootnewsportal.model.response.MethodArgumentNotValidResponse;
 
@@ -24,6 +25,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public MethodArgumentNotValidResponse handleValidationExceptions(MethodArgumentNotValidException exception) {
         return new MethodArgumentNotValidResponse(exception);
+    }
+
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ExceptionHandler(PasswordIncorrectException.class)
+    public CustomResponse handlePasswordIncorrectExceptions(PasswordIncorrectException exception) {
+        return new CustomResponse(exception);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)

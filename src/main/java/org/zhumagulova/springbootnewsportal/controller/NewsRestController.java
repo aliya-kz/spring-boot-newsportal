@@ -1,4 +1,4 @@
-package org.zhumagulova.springbootnewsportal.controller.rest;
+package org.zhumagulova.springbootnewsportal.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

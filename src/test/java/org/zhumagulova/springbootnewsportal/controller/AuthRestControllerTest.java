@@ -1,4 +1,4 @@
-package org.zhumagulova.springbootnewsportal.controller.rest;
+package org.zhumagulova.springbootnewsportal.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

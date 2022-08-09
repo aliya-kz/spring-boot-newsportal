@@ -1,4 +1,4 @@
-package org.zhumagulova.springbootnewsportal.controller.rest;
+package org.zhumagulova.springbootnewsportal.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,14 +7,15 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectWriter;
 import org.zhumagulova.springbootnewsportal.dto.LocalizedNewsDto;
 import org.zhumagulova.springbootnewsportal.exception.NewsAlreadyExistsException;
 import org.zhumagulova.springbootnewsportal.exception.NewsNotFoundException;
@@ -56,7 +57,7 @@ class NewsRestControllerTest {
 
     private MockMvc mockMvc;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+   // private ObjectMapper objectMapper = new ObjectMapper();
 
     LocalizedNews mockNews = LocalizedNews.builder()
             .title(TITLE)
@@ -66,7 +67,12 @@ class NewsRestControllerTest {
             .language(new Language(ID))
             .build();
 
-    String requestBody = (new ObjectMapper()).valueToTree(mockNews).toString();
+   // String requestBody = (new ObjectMapper()).valueToTree(mockNews).toString();
+   ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+    String requestBody = ow.writeValueAsString(mockNews);
+
+    NewsRestControllerTest() throws JsonProcessingException {
+    }
 
     @BeforeEach
     public void setup() {
@@ -113,13 +119,14 @@ class NewsRestControllerTest {
 
     @Test
     void createLocalizedNews_Success() throws Exception {
+
         when(newsService.createNews(mockNews, ID)).thenReturn(mockNews);
 
         LocalizedNewsDto dto = LocalizedNewsDto.fromLocalizedNews(mockNews);
 
         mockMvc.perform(post("/api/new")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
+                        .content(requestBody))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(mockNews.getTitle()))
                 .andDo(print());
@@ -143,6 +150,7 @@ class NewsRestControllerTest {
         when(newsService.updateNews(mockNews, ID)).thenReturn(mockNews);
 
         mockMvc.perform(patch("/api/{id}", ID)
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(mockNews.getTitle()))
@@ -154,6 +162,7 @@ class NewsRestControllerTest {
         when(newsService.updateNews(mockNews, ID)).thenThrow(new NullPointerException());
 
         mockMvc.perform(patch("/api/{id}", ID)
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().is5xxServerError())
                 .andExpect(jsonPath("$.reason").value("No entity found"))

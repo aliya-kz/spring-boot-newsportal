@@ -20,13 +20,23 @@
         <testcontainers.version>1.17.3</testcontainers.version>
         <jsonwebtoken.version>0.11.5</jsonwebtoken.version>
         <flyway-maven-plugin.version>8.0.0</flyway-maven-plugin.version>
-        <hibernate-validator.version>7.0.4.Final</hibernate-validator.version>
         <jacoco.version>0.8.8</jacoco.version>
         <springfox.version>3.0.0</springfox.version>
+        <sonar.version>3.9.1.2184</sonar.version>
+        <sonar.host.url>https://localhost:9000</sonar.host.url>
+        <sonar.login>sqp_96f4814cbb59538a52bea30fbdff9478f3f18dd2</sonar.login>
+        <hibernate-validator.version>7.0.1.Final</hibernate-validator.version>
 
+        <spring-boot-maven-plugin.version>2.7.2</spring-boot-maven-plugin.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <version>${sonar.version}</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/io.springfox/springfox-boot-starter -->
         <dependency>
@@ -34,6 +44,7 @@
             <artifactId>springfox-boot-starter</artifactId>
             <version>${springfox.version}</version>
         </dependency>
+
 
         <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api -->
         <dependency>
@@ -71,6 +82,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate-validator.version}</version>
         </dependency>
 
         <dependency>
@@ -129,6 +147,13 @@
             <artifactId>jacoco-maven-plugin</artifactId>
             <version>${jacoco.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-maven-plugin -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <version>${spring-boot-maven-plugin.version}</version>
+        </dependency>
+
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -145,6 +170,13 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <testFailureIgnore>true</testFailureIgnore>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco.version}</version>
@@ -154,7 +186,7 @@
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
-                 
+
                     <execution>
                         <id>report</id>
                         <phase>test</phase>
