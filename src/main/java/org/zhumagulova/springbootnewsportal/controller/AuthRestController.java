@@ -63,6 +63,7 @@ public class AuthRestController {
         securityContextLogoutHandler.logout(request, response, null);
     }
 
+
     @PostMapping("/signup")
     @ApiOperation("Register new user")
     public void signup(@RequestBody @Valid RegistrationRequest request) throws PasswordIncorrectException {
