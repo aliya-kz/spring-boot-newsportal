@@ -145,7 +145,7 @@ class NewsRestControllerTest {
 
     @Test
     void updateLocalizedNews_Success() throws Exception {
-        when(newsService.updateNews(mockNews, ID)).thenReturn(mockNews);
+        when(newsService.updateNews(LocalizedNewsMapper.INSTANCE.localizedNewsToDto(mockNews), ID)).thenReturn(mockNews);
 
         mockMvc.perform(patch("/api/{id}", ID)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -157,7 +157,7 @@ class NewsRestControllerTest {
 
     @Test
     void updateLocalizedNews_NewsWithIdNotExist_ThrowsException() throws Exception {
-        when(newsService.updateNews(mockNews, ID)).thenThrow(new NullPointerException());
+        when(newsService.updateNews(LocalizedNewsMapper.INSTANCE.localizedNewsToDto(mockNews), ID)).thenThrow(new NullPointerException());
 
         mockMvc.perform(patch("/api/{id}", ID)
                         .contentType(MediaType.APPLICATION_JSON)

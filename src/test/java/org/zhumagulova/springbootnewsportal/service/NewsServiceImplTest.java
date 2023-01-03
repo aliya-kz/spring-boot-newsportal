@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.jdbc.Sql;
 import org.zhumagulova.springbootnewsportal.exception.NewsAlreadyExistsException;
 import org.zhumagulova.springbootnewsportal.exception.NewsNotFoundException;
+import org.zhumagulova.springbootnewsportal.mapper.LocalizedNewsMapper;
 import org.zhumagulova.springbootnewsportal.model.Language;
 import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
 
@@ -102,7 +103,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
                 .language(language)
                 .build();
 
-        newsService.updateNews(localizedNews, EXISTING_NEWS_ID);
+        newsService.updateNews(LocalizedNewsMapper.INSTANCE.localizedNewsToDto(localizedNews), EXISTING_NEWS_ID);
 
         LocalizedNews databaseNews = newsService.getNewsById(EXISTING_NEWS_ID).get();
         assertEquals(TITLE, databaseNews.getTitle());
@@ -119,7 +120,9 @@ class NewsServiceImplTest extends BaseIntegrationTest {
                 .language(language)
                 .build();
 
-        assertThrows(NewsNotFoundException.class, () -> newsService.updateNews(localizedNews, NON_EXISTING_LOCALIZED_NEWS_ID));
+
+        assertThrows(NewsNotFoundException.class, () ->
+                newsService.updateNews(LocalizedNewsMapper.INSTANCE.localizedNewsToDto(localizedNews), NON_EXISTING_LOCALIZED_NEWS_ID));
     }
 
     @Test

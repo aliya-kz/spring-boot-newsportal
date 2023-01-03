@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zhumagulova.springbootnewsportal.dao.LocalizedNewsRepo;
 import org.zhumagulova.springbootnewsportal.dao.NewsRepo;
+import org.zhumagulova.springbootnewsportal.dto.LocalizedNewsDto;
 import org.zhumagulova.springbootnewsportal.exception.BatchDeleteRolledBackException;
 import org.zhumagulova.springbootnewsportal.exception.NewsAlreadyExistsException;
 import org.zhumagulova.springbootnewsportal.exception.NewsNotFoundException;
+import org.zhumagulova.springbootnewsportal.mapper.LocalizedNewsMapper;
 import org.zhumagulova.springbootnewsportal.model.Language;
 import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
 import org.zhumagulova.springbootnewsportal.model.News;
@@ -69,14 +71,17 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
-    public LocalizedNews updateNews(LocalizedNews localizedNews, long id) throws NewsNotFoundException {
+    public LocalizedNews updateNews(LocalizedNewsDto localizedNewsDto, long id) throws NewsNotFoundException {
         long languageId = languageService.getLanguageIdByLocale();
         LocalizedNews databaseNews = localizedNewsRepo.findByNewsIdAndLanguageId(id, languageId)
                 .orElseThrow(() -> new NewsNotFoundException(id));
-        databaseNews.setTitle(localizedNews.getTitle());
+        LocalizedNewsMapper.INSTANCE.updateLocalizedNewsFromDto(localizedNewsDto, databaseNews);
+        localizedNewsRepo.save(databaseNews);
+      /*  databaseNews.setTitle(localizedNews.getTitle());
         databaseNews.setBrief(localizedNews.getBrief());
         databaseNews.setContent(localizedNews.getContent());
-        databaseNews.setDate(localizedNews.getDate());
+        databaseNews.setDate(localizedNews.getDate());*/
+     //   return localizedNewsRepo.save(databaseNews);
         return localizedNewsRepo.save(databaseNews);
     }
 

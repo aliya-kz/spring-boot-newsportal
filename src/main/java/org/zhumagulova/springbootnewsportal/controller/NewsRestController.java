@@ -69,7 +69,7 @@ public class NewsRestController {
     @PatchMapping("/{id}")
     @ApiOperation("Updating news")
     public LocalizedNewsDto update(@PathVariable("id") long id, @Valid @RequestBody LocalizedNewsDto newsDto) throws NewsNotFoundException {
-        LocalizedNews updatedNews = newsService.updateNews(LocalizedNewsMapper.INSTANCE.dtoToLocalizedNews(newsDto), id);
+        LocalizedNews updatedNews = newsService.updateNews(newsDto, id);
         return LocalizedNewsMapper.INSTANCE.localizedNewsToDto(updatedNews);
     }
 
