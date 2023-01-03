@@ -14,6 +14,8 @@ import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -87,6 +89,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
 
         assertThrows(NewsAlreadyExistsException.class, () -> newsService.createNews(localizedNews, EXISTING_NEWS_ID));
     }
+
 
     @Test
     void updateNews_Success_True() throws NewsNotFoundException {

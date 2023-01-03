@@ -10,6 +10,7 @@ import org.zhumagulova.springbootnewsportal.dto.LocalizedNewsDto;
 import org.zhumagulova.springbootnewsportal.exception.BatchDeleteRolledBackException;
 import org.zhumagulova.springbootnewsportal.exception.NewsAlreadyExistsException;
 import org.zhumagulova.springbootnewsportal.exception.NewsNotFoundException;
+import org.zhumagulova.springbootnewsportal.mapper.LocalizedNewsMapper;
 import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
 import org.zhumagulova.springbootnewsportal.service.NewsService;
 
@@ -35,7 +36,7 @@ public class NewsRestController {
     @ApiOperation("Getting the list of all news of current locale")
     public List<LocalizedNewsDto> allNews() {
         return newsService.getAllNews().stream()
-                .map(LocalizedNewsDto::fromLocalizedNews)
+                .map(LocalizedNewsMapper.INSTANCE::localizedNewsToDto)
                 .collect(Collectors.toList());
     }
 
@@ -54,22 +55,22 @@ public class NewsRestController {
     public LocalizedNewsDto create(@Valid @RequestBody LocalizedNewsDto newsDto,
                                    @RequestParam(required = false) String newsId) throws NewsAlreadyExistsException {
         long id = StringUtils.hasText(newsId) ? Long.parseLong(newsId) : 0;
-        LocalizedNews createdNews = newsService.createNews(new LocalizedNewsDto().toLocalizedNews(newsDto), id);
-        return LocalizedNewsDto.fromLocalizedNews(createdNews);
+        LocalizedNews createdNews = newsService.createNews(LocalizedNewsMapper.INSTANCE.dtoToLocalizedNews(newsDto), id);
+        return LocalizedNewsMapper.INSTANCE.localizedNewsToDto(createdNews);
     }
 
     @GetMapping("/{id}")
     @ApiOperation("Getting news by id")
     public LocalizedNewsDto show(@PathVariable("id") long id) throws NewsNotFoundException {
         LocalizedNews news = newsService.getNewsById(id).orElseThrow(() -> new NewsNotFoundException(id));
-        return LocalizedNewsDto.fromLocalizedNews(news);
+        return LocalizedNewsMapper.INSTANCE.localizedNewsToDto(news);
     }
 
     @PatchMapping("/{id}")
     @ApiOperation("Updating news")
     public LocalizedNewsDto update(@PathVariable("id") long id, @Valid @RequestBody LocalizedNewsDto newsDto) throws NewsNotFoundException {
-        LocalizedNews updatedNews = newsService.updateNews(new LocalizedNewsDto().toLocalizedNews(newsDto), id);
-        return LocalizedNewsDto.fromLocalizedNews(updatedNews);
+        LocalizedNews updatedNews = newsService.updateNews(LocalizedNewsMapper.INSTANCE.dtoToLocalizedNews(newsDto), id);
+        return LocalizedNewsMapper.INSTANCE.localizedNewsToDto(updatedNews);
     }
 
     @DeleteMapping("/{id}")

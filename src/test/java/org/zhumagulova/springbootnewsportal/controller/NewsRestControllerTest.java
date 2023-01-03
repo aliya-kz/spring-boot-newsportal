@@ -19,6 +19,7 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectWriter;
 import org.zhumagulova.springbootnewsportal.dto.LocalizedNewsDto;
 import org.zhumagulova.springbootnewsportal.exception.NewsAlreadyExistsException;
 import org.zhumagulova.springbootnewsportal.exception.NewsNotFoundException;
+import org.zhumagulova.springbootnewsportal.mapper.LocalizedNewsMapper;
 import org.zhumagulova.springbootnewsportal.model.Language;
 import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
 import org.zhumagulova.springbootnewsportal.service.NewsService;
@@ -57,8 +58,6 @@ class NewsRestControllerTest {
 
     private MockMvc mockMvc;
 
-   // private ObjectMapper objectMapper = new ObjectMapper();
-
     LocalizedNews mockNews = LocalizedNews.builder()
             .title(TITLE)
             .brief(BRIEF)
@@ -67,7 +66,6 @@ class NewsRestControllerTest {
             .language(new Language(ID))
             .build();
 
-   // String requestBody = (new ObjectMapper()).valueToTree(mockNews).toString();
    ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
     String requestBody = ow.writeValueAsString(mockNews);
 
@@ -122,7 +120,7 @@ class NewsRestControllerTest {
 
         when(newsService.createNews(mockNews, ID)).thenReturn(mockNews);
 
-        LocalizedNewsDto dto = LocalizedNewsDto.fromLocalizedNews(mockNews);
+        LocalizedNewsDto dto = LocalizedNewsMapper.INSTANCE.localizedNewsToDto(mockNews);
 
         mockMvc.perform(post("/api/new")
                         .contentType(MediaType.APPLICATION_JSON)

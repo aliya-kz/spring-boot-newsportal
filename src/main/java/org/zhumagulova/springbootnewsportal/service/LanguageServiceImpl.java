@@ -25,7 +25,7 @@ public class LanguageServiceImpl implements LanguageService {
     @Override
     public long getLanguageIdByLocale() {
         Locale locale = LocaleContextHolder.getLocale();
-        String langCode = locale.getLanguage().trim();
+        String langCode = locale.getLanguage();
         return languageRepo.findIdByCode(langCode);
     }
 
@@ -33,7 +33,7 @@ public class LanguageServiceImpl implements LanguageService {
     @Override
     public Optional<Language> getLanguageByLocale() {
         Locale locale = LocaleContextHolder.getLocale();
-        String langCode = locale.getLanguage().trim();
+        String langCode = locale.getLanguage();
         return languageRepo.findByCode(langCode);
     }
 }
