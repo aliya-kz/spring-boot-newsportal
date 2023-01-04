@@ -77,11 +77,6 @@ public class NewsServiceImpl implements NewsService {
                 .orElseThrow(() -> new NewsNotFoundException(id));
         LocalizedNewsMapper.INSTANCE.updateLocalizedNewsFromDto(localizedNewsDto, databaseNews);
         localizedNewsRepo.save(databaseNews);
-      /*  databaseNews.setTitle(localizedNews.getTitle());
-        databaseNews.setBrief(localizedNews.getBrief());
-        databaseNews.setContent(localizedNews.getContent());
-        databaseNews.setDate(localizedNews.getDate());*/
-     //   return localizedNewsRepo.save(databaseNews);
         return localizedNewsRepo.save(databaseNews);
     }
 

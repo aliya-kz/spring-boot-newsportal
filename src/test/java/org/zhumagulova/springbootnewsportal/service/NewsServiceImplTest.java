@@ -15,8 +15,6 @@ import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
