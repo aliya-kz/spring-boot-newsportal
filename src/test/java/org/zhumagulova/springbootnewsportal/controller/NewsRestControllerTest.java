@@ -53,7 +53,8 @@ class NewsRestControllerTest {
     @MockBean
     private NewsService newsService;
 
-    @Autowired
+    private final LocalizedNewsMapper localizedNewsMapper;
+
     WebApplicationContext context;
 
     private MockMvc mockMvc;
@@ -69,7 +70,9 @@ class NewsRestControllerTest {
    ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
     String requestBody = ow.writeValueAsString(mockNews);
 
-    NewsRestControllerTest() throws JsonProcessingException {
+    NewsRestControllerTest(LocalizedNewsMapper localizedNewsMapper, WebApplicationContext context) throws JsonProcessingException {
+        this.localizedNewsMapper = localizedNewsMapper;
+        this.context = context;
     }
 
     @BeforeEach
@@ -120,7 +123,7 @@ class NewsRestControllerTest {
 
         when(newsService.createNews(mockNews, ID)).thenReturn(mockNews);
 
-        LocalizedNewsDto dto = LocalizedNewsMapper.INSTANCE.localizedNewsToDto(mockNews);
+        LocalizedNewsDto dto = localizedNewsMapper.localizedNewsToDto(mockNews);
 
         mockMvc.perform(post("/api/new")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -145,7 +148,7 @@ class NewsRestControllerTest {
 
     @Test
     void updateLocalizedNews_Success() throws Exception {
-        when(newsService.updateNews(LocalizedNewsMapper.INSTANCE.localizedNewsToDto(mockNews), ID)).thenReturn(mockNews);
+        when(newsService.updateNews(localizedNewsMapper.localizedNewsToDto(mockNews), ID)).thenReturn(mockNews);
 
         mockMvc.perform(patch("/api/{id}", ID)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -157,7 +160,7 @@ class NewsRestControllerTest {
 
     @Test
     void updateLocalizedNews_NewsWithIdNotExist_ThrowsException() throws Exception {
-        when(newsService.updateNews(LocalizedNewsMapper.INSTANCE.localizedNewsToDto(mockNews), ID)).thenThrow(new NullPointerException());
+        when(newsService.updateNews(localizedNewsMapper.localizedNewsToDto(mockNews), ID)).thenThrow(new NullPointerException());
 
         mockMvc.perform(patch("/api/{id}", ID)
                         .contentType(MediaType.APPLICATION_JSON)

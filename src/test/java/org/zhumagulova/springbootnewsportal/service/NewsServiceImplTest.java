@@ -33,9 +33,15 @@ class NewsServiceImplTest extends BaseIntegrationTest {
     private final static String BRIEF = "Test brief";
     private final static String CONTENT = "Test content";
 
+    private final NewsService newsService;
+
+    private final LocalizedNewsMapper localizedNewsMapper;
 
     @Autowired
-    private NewsService newsService;
+    public NewsServiceImplTest(NewsService newsService, LocalizedNewsMapper localizedNewsMapper) {
+        this.newsService = newsService;
+        this.localizedNewsMapper = localizedNewsMapper;
+    }
 
     @Test
     void getLocalizedNewsById_NewsExist_True() {
@@ -101,7 +107,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
                 .language(language)
                 .build();
 
-        newsService.updateNews(LocalizedNewsMapper.INSTANCE.localizedNewsToDto(localizedNews), EXISTING_NEWS_ID);
+        newsService.updateNews(localizedNewsMapper.localizedNewsToDto(localizedNews), EXISTING_NEWS_ID);
 
         LocalizedNews databaseNews = newsService.getNewsById(EXISTING_NEWS_ID).get();
         assertEquals(TITLE, databaseNews.getTitle());
@@ -120,7 +126,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
 
 
         assertThrows(NewsNotFoundException.class, () ->
-                newsService.updateNews(LocalizedNewsMapper.INSTANCE.localizedNewsToDto(localizedNews), NON_EXISTING_LOCALIZED_NEWS_ID));
+                newsService.updateNews(localizedNewsMapper.localizedNewsToDto(localizedNews), NON_EXISTING_LOCALIZED_NEWS_ID));
     }
 
     @Test

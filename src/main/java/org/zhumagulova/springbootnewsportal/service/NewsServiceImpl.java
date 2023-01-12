@@ -30,11 +30,15 @@ public class NewsServiceImpl implements NewsService {
 
     private final LanguageService languageService;
 
+    private final LocalizedNewsMapper localizedNewsMapper;
+
     @Autowired
-    public NewsServiceImpl(LocalizedNewsRepo localizedNewsRepo, NewsRepo newsRepo, LanguageService languageService) {
+    public NewsServiceImpl(LocalizedNewsRepo localizedNewsRepo, NewsRepo newsRepo, LanguageService languageService,
+                           LocalizedNewsMapper localizedNewsMapper) {
         this.localizedNewsRepo = localizedNewsRepo;
         this.newsRepo = newsRepo;
         this.languageService = languageService;
+        this.localizedNewsMapper = localizedNewsMapper;
     }
 
     @Override
@@ -75,7 +79,7 @@ public class NewsServiceImpl implements NewsService {
         long languageId = languageService.getLanguageIdByLocale();
         LocalizedNews databaseNews = localizedNewsRepo.findByNewsIdAndLanguageId(id, languageId)
                 .orElseThrow(() -> new NewsNotFoundException(id));
-        LocalizedNewsMapper.INSTANCE.updateLocalizedNewsFromDto(localizedNewsDto, databaseNews);
+        localizedNewsMapper.updateLocalizedNewsFromDto(localizedNewsDto, databaseNews);
         localizedNewsRepo.save(databaseNews);
         return localizedNewsRepo.save(databaseNews);
     }
