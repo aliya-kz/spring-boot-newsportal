@@ -61,6 +61,7 @@ public class NewsServiceImpl implements NewsService {
         long languageId = languageService.getLanguageIdByLocale();
         Optional <LocalizedNews> existingNews = localizedNewsRepo.findByNewsIdAndLanguageId(newsId, languageId);
         if (newsId!= 0 && existingNews.isPresent()) {
+            log.error("NewsAlreadyExistException was thrown at createNews method");
             throw new NewsAlreadyExistsException(newsId);
         }
         News news = new News(newsId);
@@ -91,7 +92,6 @@ public class NewsServiceImpl implements NewsService {
 
         localizedNewsRepo.findByNewsIdAndLanguageId(id, languageId)
                 .orElseThrow(() -> new NewsNotFoundException(id));
-
         localizedNewsRepo.deleteByNewsIdAndLanguageId(id, languageId);
     }
 
@@ -107,6 +107,7 @@ public class NewsServiceImpl implements NewsService {
                 localizedNewsRepo.findByNewsIdAndLanguageId(id, languageId).orElseThrow(Exception::new);
                 localizedNewsRepo.deleteByNewsIdAndLanguageId(id, languageId);
             } catch (Exception e) {
+                log.error("Exception was thrown by one or several news at batchDelete method");
                 newsThatThrowException = new long[newsThatThrowException.length + 1];
                 newsThatThrowException[newsThatThrowException.length - 1] = temporaryId;
             }

@@ -1,14 +1,31 @@
 version: "3.8"
 
 services:
-  app:
+  config:
+    container_name: config
+    image: config-server
+    ports:
+      - "8071:8071"
+    healthcheck:
+      test: curl -f http://localhost:8071/ || exit 1
+      interval: 30s
+      retries: 3
+      start_period: 20s
+      timeout: 60s
+
+  news-server:
+    container_name: news-server
     build: .
     ports:
       - "8080:8080"
     depends_on:
-      - postgresqldb
+      postgresqldb:
+        condition: service_started
+      config:
+        condition: service_healthy
 
   postgresqldb:
+    container_name: postgresql-db
     image: postgres
     ports:
       - "5432:5432"
@@ -16,3 +33,15 @@ services:
     environment:
       POSTGRES_PASSWORD: 0604
       POSTGRES_DB: news_portal
+
+  eureka:
+    image: eureka-server
+    container_name: eureka
+    ports:
+      - "8761:8761"
+    depends_on:
+      config:
+        condition: service_started
+
+
+

@@ -30,6 +30,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     @ExceptionHandler(PasswordIncorrectException.class)
     public CustomResponse handlePasswordIncorrectExceptions(PasswordIncorrectException exception) {
+        log.error("PasswordIncorrectException was thrown due to incorrect password (ExceptionHandler logging)");
         return new CustomResponse(exception);
     }
 
@@ -37,6 +38,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler({NewsNotFoundException.class})
     public CustomResponse catchNewsNotFoundException(NewsNotFoundException exception) {
+        log.error("NewsNotFoundException was thrown  (ExceptionHandler logging)");
         return new CustomResponse(exception);
     }
 
@@ -50,12 +52,14 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler({BadCredentialsException.class})
     public CustomResponse badCredentials(BadCredentialsException exception) {
+        log.error("BadCredentialsException was thrown (ExceptionHandler logging)");
         return new CustomResponse(exception);
     }
 
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler({NewsAlreadyExistsException.class})
     public CustomResponse newsAlreadyExist(NewsAlreadyExistsException exception) {
+        log.error("NewsAlreadyExistsException was thrown (ExceptionHandler logging)");
         return new CustomResponse(exception);
     }
 
