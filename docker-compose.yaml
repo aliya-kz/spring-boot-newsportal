@@ -1,17 +1,22 @@
 version: "3.8"
 
 services:
-  config:
-    container_name: config
+  config-server:
+    container_name: config-server
     image: config-server
     ports:
       - "8071:8071"
     healthcheck:
-      test: curl -f http://localhost:8071/ || exit 1
+      test: curl -f http://localhost:8071/news-service/default || exit 1
       interval: 30s
       retries: 3
       start_period: 20s
       timeout: 60s
+    environment:
+      - CONFIG_SERVER_PORT=8071
+      - POSTGRES_PASSWORD=0604
+      - POSTGRES_USER=postgres
+      - DATASOURCE_URL=jdbc:postgresql://localhost:5432/news_portal
 
   news-server:
     container_name: news-server
@@ -21,8 +26,11 @@ services:
     depends_on:
       postgresqldb:
         condition: service_started
-      config:
+      config-server:
         condition: service_healthy
+    environment:
+      - CONFIG_SERVER_HOST=config-server
+      - SPRING_PROFILES_ACTIVE=prod
 
   postgresqldb:
     container_name: postgresql-db
@@ -40,7 +48,7 @@ services:
     ports:
       - "8761:8761"
     depends_on:
-      config:
+      config-server:
         condition: service_started
 
 

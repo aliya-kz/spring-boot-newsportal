@@ -1,0 +1,17 @@
+jwt:
+  secretKey: somewhereOverTheRainbowBlueBirdsFlyAndTheDreamThatYouDareToOhWhyOhWhCan'tI
+  validityInMilliSeconds: 86400000
+  header: Authorization
+
+locale:
+  default: en
+  paramName: locale
+
+spring:
+  application:
+   name: news-service
+
+  config:
+    import: optional:configserver:http://${CONFIG_SERVER_HOST}:8071/
+  main:
+    allow-bean-definition-overriding: true
