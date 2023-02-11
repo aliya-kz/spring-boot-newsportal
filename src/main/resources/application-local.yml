@@ -1,0 +1,53 @@
+jwt:
+  secretKey: somewhereOverTheRainbowBlueBirdsFlyAndTheDreamThatYouDareToOhWhyOhWhCan'tI
+  validityInMilliSeconds: 86400000
+  header: Authorization
+
+locale:
+  default: en
+  paramName: locale
+
+spring:
+  config:
+    import: optional:configserver:http://localhost:8071
+  application:
+    name: news-service
+
+  main:
+    allow-bean-definition-overriding: true
+  jackson:
+    date-format: yyyy-MM-dd
+  jooq:
+    sql-dialect: org.hibernate.dialect.PostgreSQL95Dialect
+    jpa:
+      show-sql: false
+      hibernate:
+        ddl-auto: validate
+      generate-ddl: false
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/news_portal
+    username: postgres
+    password: 0604
+  flyway:
+    url: jdbc:postgresql://localhost:5432/news_portal
+    locations: /db/migration
+    enabled: true
+    password: 0604
+    schemas: public
+    user: postgres
+    encoding: UTF-8
+
+logging:
+  file:
+    name: D:/IdeaProjects/docker_logs/elk_logs.log
+  level:
+    root: debug
+
+
+
+
+
+
+
+  

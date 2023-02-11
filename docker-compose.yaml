@@ -12,11 +12,10 @@ services:
       retries: 3
       start_period: 20s
       timeout: 60s
+    volumes:
+      - /var/lib/docker/containers/:/usr/src/logs
     environment:
       - CONFIG_SERVER_PORT=8071
-      - POSTGRES_PASSWORD=0604
-      - POSTGRES_USER=postgres
-      - DATASOURCE_URL=jdbc:postgresql://localhost:5432/news_portal
 
   news-server:
     container_name: news-server
@@ -25,31 +24,50 @@ services:
       - "8080:8080"
     depends_on:
       postgresqldb:
-        condition: service_started
+        condition: service_healthy
       config-server:
         condition: service_healthy
     environment:
       - CONFIG_SERVER_HOST=config-server
       - SPRING_PROFILES_ACTIVE=prod
+      - CONFIG_SERVER_PORT=8071
+      - POSTGRES_PASSWORD=0604
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=news_portal
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresqldb/news_portal
 
   postgresqldb:
-    container_name: postgresql-db
+    container_name: postgresqldb
     image: postgres
     ports:
       - "5432:5432"
     restart: always
     environment:
       POSTGRES_PASSWORD: 0604
+      POSTGRES_USER: postgres
       POSTGRES_DB: news_portal
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - .:/docker-entrypoint-initdb.d
+      - .:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "psql -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
 
   eureka:
     image: eureka-server
-    container_name: eureka
+    container_name: eureka-server
     ports:
       - "8761:8761"
     depends_on:
       config-server:
         condition: service_started
+
+
+
 
 
 
