@@ -1,15 +1,10 @@
-jwt:
-  secretKey: somewhereOverTheRainbowBlueBirdsFlyAndTheDreamThatYouDareToOhWhyOhWhCan'tI
-  validityInMilliSeconds: 86400000
-  header: Authorization
-
 locale:
   default: en
   paramName: locale
 
 spring:
   config:
-    import: optional:configserver:http://${CONFIG_SERVER_HOST}
+    import: optional:configserver:http://${CONFIG_SERVER_HOST}:${CONFIG_SERVER_PORT}
   application:
     name: news-service
   main:
@@ -30,7 +25,7 @@ spring:
 
 logging:
   file:
-    name: D:/IdeaProjects/docker_logs/elk_logs.log
+    path: D:/IdeaProjects/docker_logs/elk_logs.log
   level:
     root: debug
 
@@ -43,5 +38,9 @@ flyway:
   user: ${POSTGRES_USER}
   encoding: UTF-8
 
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER}/
 
 

@@ -35,6 +35,10 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=news_portal
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresqldb/news_portal
+      - EUREKA_SERVER=http://eureka-server:8761/eureka
+    links:
+      - config-server
+      - eureka-server
 
   postgresqldb:
     container_name: postgresqldb
@@ -57,7 +61,7 @@ services:
       retries: 5
 
 
-  eureka:
+  eureka-server:
     image: eureka-server
     container_name: eureka-server
     ports:
