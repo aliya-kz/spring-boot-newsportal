@@ -3,6 +3,7 @@ package org.zhumagulova.springbootnewsportal.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -13,6 +14,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.zhumagulova.springbootnewsportal.security.jwt.JwtConfigurer;
+
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)

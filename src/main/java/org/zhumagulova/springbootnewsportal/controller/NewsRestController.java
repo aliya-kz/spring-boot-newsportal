@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.zhumagulova.springbootnewsportal.dto.LocalizedNewsDto;
@@ -14,9 +15,11 @@ import org.zhumagulova.springbootnewsportal.mapper.LocalizedNewsMapper;
 import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
 import org.zhumagulova.springbootnewsportal.service.NewsService;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -36,7 +39,8 @@ public class NewsRestController {
 
     @GetMapping
     @ApiOperation("Getting the list of all news of current locale")
-    public List<LocalizedNewsDto> allNews() {
+    public List<LocalizedNewsDto> allNews(HttpServletResponse response) {
+        response.setHeader("Cache-Control", "private, no-transform, max-age=60, must-revalidate");
         return newsService.getAllNews().stream()
                 .map(localizedNewsMapper::localizedNewsToDto)
                 .collect(Collectors.toList());
@@ -63,7 +67,8 @@ public class NewsRestController {
 
     @GetMapping("/{id}")
     @ApiOperation("Getting news by id")
-    public LocalizedNewsDto show(@PathVariable("id") long id) throws NewsNotFoundException {
+    public LocalizedNewsDto getNewsById(@PathVariable("id") long id, HttpServletResponse response) throws NewsNotFoundException {
+        response.setHeader("Cache-Control", "private, no-transform, max-age=60, must-revalidate");
         LocalizedNews news = newsService.getNewsById(id).orElseThrow(() -> new NewsNotFoundException(id));
         return localizedNewsMapper.localizedNewsToDto(news);
     }

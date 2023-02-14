@@ -24,10 +24,13 @@ spring:
     password: ${POSTGRES_PASSWORD}
 
 logging:
-  file:
-    path: D:/IdeaProjects/docker_logs/elk_logs.log
   level:
     root: debug
+    org.hibernate: debug
+    org.springframework.web: debug
+  file:
+    name: D:/IdeaProjects/docker_logs/elk_logs.log
+
 
 flyway:
   url: ${DATASOURCE_URL}
@@ -42,5 +45,7 @@ eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_SERVER}/
+
+
 
 
