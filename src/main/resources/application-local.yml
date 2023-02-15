@@ -19,6 +19,8 @@ spring:
       hibernate:
         ddl-auto: validate
       generate-ddl: false
+  redis:
+    host: localhost
 
   datasource:
     url: jdbc:postgresql://localhost:5432/news_portal
@@ -35,9 +37,9 @@ spring:
 
 logging:
   level:
-    root: debug
+    root: error
     org.hibernate: debug
-    org.springframework.web: debug
+    org.springframework.web: error
   file:
     name: D:/IdeaProjects/docker_logs/elk_logs.log
 

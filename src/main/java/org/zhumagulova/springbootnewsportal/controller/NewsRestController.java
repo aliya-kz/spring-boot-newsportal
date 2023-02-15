@@ -37,8 +37,7 @@ public class NewsRestController {
 
     @GetMapping
     @ApiOperation("Getting the list of all news of current locale")
-    public List<LocalizedNewsDto> allNews(HttpServletResponse response) {
-        response.setHeader("Cache-Control", "private, no-transform, max-age=60, must-revalidate");
+    public List<LocalizedNewsDto> allNews() {
         return newsService.getAllNews().stream()
                 .map(localizedNewsMapper::localizedNewsToDto)
                 .collect(Collectors.toList());
@@ -65,8 +64,7 @@ public class NewsRestController {
 
     @GetMapping("/{id}")
     @ApiOperation("Getting news by id")
-    public LocalizedNewsDto getNewsById(@PathVariable("id") long id, HttpServletResponse response) throws NewsNotFoundException {
-        response.setHeader("Cache-Control", "private, no-transform, max-age=60, must-revalidate");
+    public LocalizedNewsDto getNewsById(@PathVariable("id") long id) throws NewsNotFoundException {
         LocalizedNews news = newsService.getNewsById(id).orElseThrow(() -> new NewsNotFoundException(id));
         return localizedNewsMapper.localizedNewsToDto(news);
     }

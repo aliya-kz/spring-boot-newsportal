@@ -22,13 +22,12 @@ spring:
     url: ${SPRING_DATASOURCE_URL}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
-
-  hazelcast:
-    config: classpath:hazelcast.yaml
+  redis:
+    host: ${CACHE_HOST}
 
 logging:
   level:
-    root: debug
+    root: error
     org.hibernate: debug
     org.springframework.web: debug
   file:
