@@ -3,3 +3,6 @@ hazelcast:
     join:
       multicast:
         enabled: true
+  map:
+    news:
+      time-to-live-seconds: 60
