@@ -23,6 +23,9 @@ spring:
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
 
+  hazelcast:
+    config: classpath:hazelcast.yaml
+
 logging:
   level:
     root: debug
@@ -45,7 +48,6 @@ eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_SERVER}/
-
 
 
 

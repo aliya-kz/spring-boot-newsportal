@@ -1,5 +1,6 @@
 package org.zhumagulova.springbootnewsportal.config;
 
+import com.hazelcast.spring.cache.HazelcastCacheManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;

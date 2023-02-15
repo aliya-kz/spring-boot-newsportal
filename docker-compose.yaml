@@ -18,15 +18,14 @@ services:
       - CONFIG_SERVER_PORT=8071
 
   news-server:
-    container_name: news-server
     build: .
-    ports:
-      - "8080:8080"
     depends_on:
       postgresqldb:
         condition: service_healthy
       config-server:
         condition: service_healthy
+    ports:
+      - "8080"
     environment:
       - CONFIG_SERVER_HOST=config-server
       - SPRING_PROFILES_ACTIVE=prod
@@ -39,6 +38,7 @@ services:
     links:
       - config-server
       - eureka-server
+
 
   postgresqldb:
     container_name: postgresqldb

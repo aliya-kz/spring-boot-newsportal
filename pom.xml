@@ -30,6 +30,7 @@
         <mapstruct.version>1.5.3.Final</mapstruct.version>
         <lombok.mapstruct>0.2.0</lombok.mapstruct>
         <caffeine.version>3.1.2</caffeine.version>
+        <hazelcast.version>4.2.7</hazelcast.version>
 
         <spring-boot-maven-plugin.version>2.7.2</spring-boot-maven-plugin.version>
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
@@ -93,11 +94,19 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.github.ben-manes.caffeine/caffeine -->
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
             <version>${caffeine.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.hazelcast/hazelcast -->
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast-all</artifactId>
+            <version>${hazelcast.version}</version>
         </dependency>
 
         <dependency>
