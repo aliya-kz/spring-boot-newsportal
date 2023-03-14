@@ -3,8 +3,6 @@ package org.zhumagulova.springbootnewsportal.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +44,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
-    @Cacheable(value = "news")
+    @Cacheable(cacheNames = "news")
     public List<LocalizedNews> getAllNews() {
         log.info("Entering getAllNews method");
         long languageId = languageService.getLanguageIdByLocale();
@@ -55,7 +53,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
-    @Cacheable(value = "news", key="#id")
+    @Cacheable(cacheNames = "news", key = "#id")
     public Optional<LocalizedNews> getNewsById(long id) {
         log.info("Entering getNewsById method");
         long languageId = languageService.getLanguageIdByLocale();
@@ -83,7 +81,6 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
-    @CachePut(value = "news", key="#id")
     public LocalizedNews updateNews(LocalizedNewsDto localizedNewsDto, long id) throws NewsNotFoundException {
         long languageId = languageService.getLanguageIdByLocale();
         LocalizedNews databaseNews = localizedNewsRepo.findByNewsIdAndLanguageId(id, languageId)
@@ -95,7 +92,6 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
-    @CacheEvict(value = "news", key="#id")
     public void delete(long id) throws NewsNotFoundException {
         long languageId = languageService.getLanguageIdByLocale();
 

@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.zhumagulova.springbootnewsportal.dto.LocalizedNewsDto;
@@ -14,7 +15,6 @@ import org.zhumagulova.springbootnewsportal.mapper.LocalizedNewsMapper;
 import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
 import org.zhumagulova.springbootnewsportal.service.NewsService;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
@@ -37,6 +37,7 @@ public class NewsRestController {
 
     @GetMapping
     @ApiOperation("Getting the list of all news of current locale")
+   // @Cacheable(cacheNames = "news")
     public List<LocalizedNewsDto> allNews() {
         return newsService.getAllNews().stream()
                 .map(localizedNewsMapper::localizedNewsToDto)

@@ -25,9 +25,10 @@ spring:
   redis:
     host: ${CACHE_HOST}
 
+
 logging:
   level:
-    root: error
+    root: debug
     org.hibernate: debug
     org.springframework.web: debug
   file:
@@ -35,7 +36,7 @@ logging:
 
 
 flyway:
-  url: ${DATASOURCE_URL}
+  url: ${SPRING_DATASOURCE_URL}
   locations: /db/migration
   enabled: true
   password: ${POSTGRES_PASSWORD}
@@ -47,6 +48,7 @@ eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_SERVER}/
+
 
 
 
