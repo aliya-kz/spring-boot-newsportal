@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zhumagulova.springbootnewsportal.dao.LocalizedNewsRepo;
 import org.zhumagulova.springbootnewsportal.dao.NewsRepo;
+import org.zhumagulova.springbootnewsportal.dao.NewsSourceRepo;
 import org.zhumagulova.springbootnewsportal.dto.LocalizedNewsDto;
 import org.zhumagulova.springbootnewsportal.exception.BatchDeleteRolledBackException;
 import org.zhumagulova.springbootnewsportal.exception.NewsAlreadyExistsException;
@@ -16,6 +17,7 @@ import org.zhumagulova.springbootnewsportal.mapper.LocalizedNewsMapper;
 import org.zhumagulova.springbootnewsportal.model.Language;
 import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
 import org.zhumagulova.springbootnewsportal.model.News;
+import org.zhumagulova.springbootnewsportal.model.NewsSource;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -29,15 +31,22 @@ public class NewsServiceImpl implements NewsService {
 
     private final NewsRepo newsRepo;
 
+    private final NewsSourceRepo newsSourceRepo;
+
     private final LanguageService languageService;
 
     private final LocalizedNewsMapper localizedNewsMapper;
 
+    private final static long RUSSIAN_LANGUAGE_ID = 2;
+
+    private final static String DEFAULT_NEWS_SOURCE_NAME = "Internal";
+
     @Autowired
-    public NewsServiceImpl(LocalizedNewsRepo localizedNewsRepo, NewsRepo newsRepo, LanguageService languageService,
+    public NewsServiceImpl(LocalizedNewsRepo localizedNewsRepo, NewsRepo newsRepo, NewsSourceRepo newsSourceRepo, LanguageService languageService,
                            LocalizedNewsMapper localizedNewsMapper) {
         this.localizedNewsRepo = localizedNewsRepo;
         this.newsRepo = newsRepo;
+        this.newsSourceRepo = newsSourceRepo;
         this.languageService = languageService;
         this.localizedNewsMapper = localizedNewsMapper;
     }
@@ -64,18 +73,33 @@ public class NewsServiceImpl implements NewsService {
     @Transactional
     public LocalizedNews createNews(LocalizedNews localizedNews, long newsId) throws NewsAlreadyExistsException {
         long languageId = languageService.getLanguageIdByLocale();
-        Optional <LocalizedNews> existingNews = localizedNewsRepo.findByNewsIdAndLanguageId(newsId, languageId);
-        if (newsId!= 0 && existingNews.isPresent()) {
+        Optional<LocalizedNews> existingNews = localizedNewsRepo.findByNewsIdAndLanguageId(newsId, languageId);
+        if (newsId != 0 && existingNews.isPresent()) {
             log.error("NewsAlreadyExistException was thrown at createNews method");
             throw new NewsAlreadyExistsException(newsId);
         }
         News news = new News(newsId);
         news = newsRepo.save(news);
-
+        NewsSource newSource = newsSourceRepo.findByName(DEFAULT_NEWS_SOURCE_NAME).get();
+        localizedNews.setNewsSource(newSource);
         localizedNews.setNews(news);
-        Language language = languageService.getLanguageByLocale().orElseThrow(()-> new NoSuchElementException("No language found"));
+        Language language = languageService.getLanguageByLocale().orElseThrow(() -> new NoSuchElementException("No language found"));
         localizedNews.setLanguage(language);
 
+        return localizedNewsRepo.save(localizedNews);
+    }
+
+    @Override
+    @Transactional
+    public LocalizedNews createScrapedNews(LocalizedNewsDto localizedNewsDto) {
+        Language language = new Language(RUSSIAN_LANGUAGE_ID);
+        NewsSource newSource = newsSourceRepo.findByName(localizedNewsDto.getNewsSource()).get();
+        News news = new News();
+        news = newsRepo.save(news);
+        LocalizedNews localizedNews = localizedNewsMapper.dtoToLocalizedNews(localizedNewsDto);
+        localizedNews.setNews(news);
+        localizedNews.setLanguage(language);
+        localizedNews.setNewsSource(newSource);
         return localizedNewsRepo.save(localizedNews);
     }
 

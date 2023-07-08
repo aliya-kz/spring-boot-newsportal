@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,4 +20,6 @@ public interface LocalizedNewsRepo extends JpaRepository<LocalizedNews, Long> {
     LocalizedNews save(LocalizedNews localizedNews);
     @CacheEvict(cacheNames = "news", key = "#id", beforeInvocation = true)
     long deleteByNewsIdAndLanguageId(long id, long languageId);
+
+    Optional <LocalizedNews> findByTitleAndDate(String title, LocalDate date);
 }

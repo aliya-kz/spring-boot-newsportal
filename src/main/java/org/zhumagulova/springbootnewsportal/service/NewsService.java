@@ -22,6 +22,9 @@ public interface NewsService {
     LocalizedNews createNews(LocalizedNews news, long newsId) throws NewsAlreadyExistsException;
 
     @Transactional
+    LocalizedNews createScrapedNews(LocalizedNewsDto localizedNewsDto) throws NewsAlreadyExistsException;
+
+    @Transactional
     LocalizedNews updateNews(LocalizedNewsDto localizedNewsDto, long id) throws NewsNotFoundException;
 
     @Transactional

@@ -4,7 +4,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.zhumagulova.springbootnewsportal.dto.LocalizedNewsDto;
@@ -23,21 +24,31 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequestMapping(value = "/api")
-@Api ("News management controller")
+@Api("News management controller")
 public class NewsRestController {
 
     private final NewsService newsService;
 
     private final LocalizedNewsMapper localizedNewsMapper;
+
+    private final static String TENGRINEWS_SOURCE_NAME = "Tengrinews";
     @Autowired
     public NewsRestController(NewsService newsService, LocalizedNewsMapper localizedNewsMapper) {
         this.newsService = newsService;
         this.localizedNewsMapper = localizedNewsMapper;
     }
 
+    @KafkaListener(
+            topics = "tengri-news")
+    public void listenTengriNews(@Payload LocalizedNewsDto localizedNewsDto) throws NewsAlreadyExistsException {
+        localizedNewsDto.setNewsSource(TENGRINEWS_SOURCE_NAME);
+        newsService.createScrapedNews(localizedNewsDto);
+        log.info("scraped news added into the database");
+    }
+
     @GetMapping
     @ApiOperation("Getting the list of all news of current locale")
-   // @Cacheable(cacheNames = "news")
+    // @Cacheable(cacheNames = "news")
     public List<LocalizedNewsDto> allNews() {
         return newsService.getAllNews().stream()
                 .map(localizedNewsMapper::localizedNewsToDto)

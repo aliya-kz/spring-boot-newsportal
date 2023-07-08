@@ -13,24 +13,31 @@ spring:
     date-format: yyyy-MM-dd
   jooq:
     sql-dialect: org.hibernate.dialect.PostgreSQL95Dialect
-    jpa:
-      show-sql: false
-      hibernate:
-        ddl-auto: validate
-      generate-ddl: false
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
   redis:
     host: ${CACHE_HOST}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  kafka:
+    bootstrap-servers: kafka:9092
 
 
 logging:
   level:
     root: debug
-    org.hibernate: debug
     org.springframework.web: debug
+    org.apache.kafka: debug
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
   file:
     name: D:/IdeaProjects/docker_logs/elk_logs.log
 

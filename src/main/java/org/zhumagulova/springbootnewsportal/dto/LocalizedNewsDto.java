@@ -1,6 +1,7 @@
 package org.zhumagulova.springbootnewsportal.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -29,4 +30,6 @@ public class LocalizedNewsDto implements Serializable {
     private String brief;
     private String content;
 
+    @JsonIgnore
+    private String newsSource;
 }

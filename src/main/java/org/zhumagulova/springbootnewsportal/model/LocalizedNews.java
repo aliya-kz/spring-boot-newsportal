@@ -1,6 +1,7 @@
 package org.zhumagulova.springbootnewsportal.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -54,6 +55,9 @@ public class LocalizedNews implements Serializable {
     @JoinColumn(name = "language_id")
     private Language language;
 
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "news_source_id")
+    private NewsSource newsSource;
 
     @Override
     public boolean equals(Object o) {
