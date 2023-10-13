@@ -11,7 +11,7 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-import org.zhumagulova.springbootnewsportal.dto.LocalizedNewsDto;
+import org.zhumagulova.springbootnewsportal.api.model.LocalizedNewsRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +23,7 @@ public class KafkaConfig {
     private String bootstrapAddress;
 
     @Bean
-    public ConsumerFactory<String, LocalizedNewsDto> consumerFactory() {
+    public ConsumerFactory<String, LocalizedNewsRequest> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -34,15 +34,15 @@ public class KafkaConfig {
         props.put(
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
                 JsonDeserializer.class);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "tengri-news-consumer-group");
-        props.put(JsonDeserializer.TYPE_MAPPINGS, "news:org.zhumagulova.springbootnewsportal.dto.LocalizedNewsDto");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "tengri-group");
+        props.put(JsonDeserializer.TYPE_MAPPINGS, "news:org.zhumagulova.springbootnewsportal.api.model.LocalizedNewsResponse");
         return new DefaultKafkaConsumerFactory<>(props);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, LocalizedNewsDto>
+    public ConcurrentKafkaListenerContainerFactory<String, LocalizedNewsRequest>
     kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, LocalizedNewsDto> factory =
+        ConcurrentKafkaListenerContainerFactory<String, LocalizedNewsRequest> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;

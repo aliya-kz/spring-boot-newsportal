@@ -5,7 +5,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zhumagulova.springbootnewsportal.dao.LanguageRepo;
-import org.zhumagulova.springbootnewsportal.model.Language;
+import org.zhumagulova.springbootnewsportal.entity.Language;
 
 import java.util.Locale;
 import java.util.Optional;

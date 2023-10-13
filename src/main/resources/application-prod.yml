@@ -25,6 +25,8 @@ spring:
     show-sql: true
   kafka:
     bootstrap-servers: kafka:9092
+    consumer:
+      group-id: tengri-news-group
 
 
 logging:

@@ -12,9 +12,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.zhumagulova.springbootnewsportal.dto.AuthenticationRequest;
-import org.zhumagulova.springbootnewsportal.model.Role;
-import org.zhumagulova.springbootnewsportal.model.User;
+import org.zhumagulova.springbootnewsportal.api.model.AuthenticationRequest;
+import org.zhumagulova.springbootnewsportal.entity.Role;
+import org.zhumagulova.springbootnewsportal.entity.User;
 import org.zhumagulova.springbootnewsportal.security.jwt.JwtTokenProvider;
 import org.zhumagulova.springbootnewsportal.service.UserService;
 

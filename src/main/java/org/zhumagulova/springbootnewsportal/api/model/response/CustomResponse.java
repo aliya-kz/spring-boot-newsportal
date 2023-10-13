@@ -1,4 +1,4 @@
-package org.zhumagulova.springbootnewsportal.model.response;
+package org.zhumagulova.springbootnewsportal.api.model.response;
 
 import lombok.Data;
 

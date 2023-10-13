@@ -1,4 +1,4 @@
-package org.zhumagulova.springbootnewsportal.model;
+package org.zhumagulova.springbootnewsportal.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

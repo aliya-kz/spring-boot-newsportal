@@ -4,16 +4,15 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.zhumagulova.springbootnewsportal.dto.LocalizedNewsDto;
+import org.zhumagulova.springbootnewsportal.api.model.LocalizedNewsRequest;
+import org.zhumagulova.springbootnewsportal.api.model.LocalizedNewsResponse;
 import org.zhumagulova.springbootnewsportal.exception.BatchDeleteRolledBackException;
 import org.zhumagulova.springbootnewsportal.exception.NewsAlreadyExistsException;
 import org.zhumagulova.springbootnewsportal.exception.NewsNotFoundException;
 import org.zhumagulova.springbootnewsportal.mapper.LocalizedNewsMapper;
-import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
+import org.zhumagulova.springbootnewsportal.entity.LocalizedNews;
 import org.zhumagulova.springbootnewsportal.service.NewsService;
 
 import javax.validation.Valid;
@@ -31,27 +30,18 @@ public class NewsRestController {
 
     private final LocalizedNewsMapper localizedNewsMapper;
 
-    private final static String TENGRINEWS_SOURCE_NAME = "Tengrinews";
     @Autowired
     public NewsRestController(NewsService newsService, LocalizedNewsMapper localizedNewsMapper) {
         this.newsService = newsService;
         this.localizedNewsMapper = localizedNewsMapper;
     }
 
-    @KafkaListener(
-            topics = "tengri-news")
-    public void listenTengriNews(@Payload LocalizedNewsDto localizedNewsDto) throws NewsAlreadyExistsException {
-        localizedNewsDto.setNewsSource(TENGRINEWS_SOURCE_NAME);
-        newsService.createScrapedNews(localizedNewsDto);
-        log.info("scraped news added into the database");
-    }
-
     @GetMapping
     @ApiOperation("Getting the list of all news of current locale")
     // @Cacheable(cacheNames = "news")
-    public List<LocalizedNewsDto> allNews() {
+    public List<LocalizedNewsResponse> allNews() {
         return newsService.getAllNews().stream()
-                .map(localizedNewsMapper::localizedNewsToDto)
+                .map(localizedNewsMapper::entityToResponse)
                 .collect(Collectors.toList());
     }
 
@@ -67,25 +57,25 @@ public class NewsRestController {
 
     @PostMapping(value = "/new")
     @ApiOperation("Creating new news")
-    public LocalizedNewsDto create(@Valid @RequestBody LocalizedNewsDto newsDto,
+    public LocalizedNewsResponse create(@Valid @RequestBody LocalizedNewsRequest request,
                                    @RequestParam(required = false) String newsId) throws NewsAlreadyExistsException {
         long id = StringUtils.hasText(newsId) ? Long.parseLong(newsId) : 0;
-        LocalizedNews createdNews = newsService.createNews(localizedNewsMapper.dtoToLocalizedNews(newsDto), id);
-        return localizedNewsMapper.localizedNewsToDto(createdNews);
+        LocalizedNews createdNews = newsService.createNews(localizedNewsMapper.requestToEntity(request), id);
+        return localizedNewsMapper.entityToResponse(createdNews);
     }
 
     @GetMapping("/{id}")
     @ApiOperation("Getting news by id")
-    public LocalizedNewsDto getNewsById(@PathVariable("id") long id) throws NewsNotFoundException {
+    public LocalizedNewsResponse getNewsById(@PathVariable("id") long id) throws NewsNotFoundException {
         LocalizedNews news = newsService.getNewsById(id).orElseThrow(() -> new NewsNotFoundException(id));
-        return localizedNewsMapper.localizedNewsToDto(news);
+        return localizedNewsMapper.entityToResponse(news);
     }
 
     @PatchMapping("/{id}")
     @ApiOperation("Updating news")
-    public LocalizedNewsDto update(@PathVariable("id") long id, @Valid @RequestBody LocalizedNewsDto newsDto) throws NewsNotFoundException {
-        LocalizedNews updatedNews = newsService.updateNews(newsDto, id);
-        return localizedNewsMapper.localizedNewsToDto(updatedNews);
+    public LocalizedNewsResponse update(@PathVariable("id") long id, @Valid @RequestBody LocalizedNewsRequest request) throws NewsNotFoundException {
+        LocalizedNews updatedNews = newsService.updateNews(request, id);
+        return localizedNewsMapper.entityToResponse(updatedNews);
     }
 
     @DeleteMapping("/{id}")

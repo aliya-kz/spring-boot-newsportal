@@ -6,22 +6,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.zhumagulova.springbootnewsportal.api.model.LocalizedNewsRequest;
 import org.zhumagulova.springbootnewsportal.dao.LocalizedNewsRepo;
 import org.zhumagulova.springbootnewsportal.dao.NewsRepo;
 import org.zhumagulova.springbootnewsportal.dao.NewsSourceRepo;
-import org.zhumagulova.springbootnewsportal.dto.LocalizedNewsDto;
 import org.zhumagulova.springbootnewsportal.exception.BatchDeleteRolledBackException;
 import org.zhumagulova.springbootnewsportal.exception.NewsAlreadyExistsException;
 import org.zhumagulova.springbootnewsportal.exception.NewsNotFoundException;
 import org.zhumagulova.springbootnewsportal.mapper.LocalizedNewsMapper;
-import org.zhumagulova.springbootnewsportal.model.Language;
-import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
-import org.zhumagulova.springbootnewsportal.model.News;
-import org.zhumagulova.springbootnewsportal.model.NewsSource;
+import org.zhumagulova.springbootnewsportal.entity.Language;
+import org.zhumagulova.springbootnewsportal.entity.LocalizedNews;
+import org.zhumagulova.springbootnewsportal.entity.News;
+import org.zhumagulova.springbootnewsportal.entity.NewsSource;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+
 
 @Slf4j
 @Service
@@ -89,14 +91,15 @@ public class NewsServiceImpl implements NewsService {
         return localizedNewsRepo.save(localizedNews);
     }
 
+
     @Override
     @Transactional
-    public LocalizedNews createScrapedNews(LocalizedNewsDto localizedNewsDto) {
+    public LocalizedNews createScrapedNews(LocalizedNewsRequest request) {
         Language language = new Language(RUSSIAN_LANGUAGE_ID);
-        NewsSource newSource = newsSourceRepo.findByName(localizedNewsDto.getNewsSource()).get();
+        NewsSource newSource = newsSourceRepo.findByName(request.getNewsSource()).get();
         News news = new News();
         news = newsRepo.save(news);
-        LocalizedNews localizedNews = localizedNewsMapper.dtoToLocalizedNews(localizedNewsDto);
+        LocalizedNews localizedNews = localizedNewsMapper.requestToEntity(request);
         localizedNews.setNews(news);
         localizedNews.setLanguage(language);
         localizedNews.setNewsSource(newSource);
@@ -105,11 +108,11 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
-    public LocalizedNews updateNews(LocalizedNewsDto localizedNewsDto, long id) throws NewsNotFoundException {
+    public LocalizedNews updateNews(@Valid LocalizedNewsRequest request, long id) throws NewsNotFoundException {
         long languageId = languageService.getLanguageIdByLocale();
         LocalizedNews databaseNews = localizedNewsRepo.findByNewsIdAndLanguageId(id, languageId)
                 .orElseThrow(() -> new NewsNotFoundException(id));
-        localizedNewsMapper.updateLocalizedNewsFromDto(localizedNewsDto, databaseNews);
+        localizedNewsMapper.updateLocalizedNewsFromDto(request, databaseNews);
         localizedNewsRepo.save(databaseNews);
         return localizedNewsRepo.save(databaseNews);
     }

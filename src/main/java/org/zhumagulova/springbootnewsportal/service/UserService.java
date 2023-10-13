@@ -1,6 +1,6 @@
 package org.zhumagulova.springbootnewsportal.service;
 
-import org.zhumagulova.springbootnewsportal.model.User;
+import org.zhumagulova.springbootnewsportal.entity.User;
 
 import javax.validation.Valid;
 import java.util.Optional;

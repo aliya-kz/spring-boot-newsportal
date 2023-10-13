@@ -12,8 +12,8 @@ import org.zhumagulova.springbootnewsportal.exception.BatchDeleteRolledBackExcep
 import org.zhumagulova.springbootnewsportal.exception.NewsAlreadyExistsException;
 import org.zhumagulova.springbootnewsportal.exception.NewsNotFoundException;
 import org.zhumagulova.springbootnewsportal.exception.PasswordIncorrectException;
-import org.zhumagulova.springbootnewsportal.model.response.CustomResponse;
-import org.zhumagulova.springbootnewsportal.model.response.MethodArgumentNotValidResponse;
+import org.zhumagulova.springbootnewsportal.api.model.response.CustomResponse;
+import org.zhumagulova.springbootnewsportal.api.model.response.MethodArgumentNotValidResponse;
 
 import java.util.NoSuchElementException;
 

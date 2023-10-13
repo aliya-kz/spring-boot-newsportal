@@ -6,11 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.jdbc.Sql;
+import org.zhumagulova.springbootnewsportal.api.model.LocalizedNewsRequest;
 import org.zhumagulova.springbootnewsportal.exception.NewsAlreadyExistsException;
 import org.zhumagulova.springbootnewsportal.exception.NewsNotFoundException;
 import org.zhumagulova.springbootnewsportal.mapper.LocalizedNewsMapper;
-import org.zhumagulova.springbootnewsportal.model.Language;
-import org.zhumagulova.springbootnewsportal.model.LocalizedNews;
+import org.zhumagulova.springbootnewsportal.entity.Language;
+import org.zhumagulova.springbootnewsportal.entity.LocalizedNews;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -98,16 +99,14 @@ class NewsServiceImplTest extends BaseIntegrationTest {
 
     @Test
     void updateNews_Success_True() throws NewsNotFoundException {
-        Language language = new Language(EXISTING_LANGUAGE_ID);
-        LocalizedNews localizedNews = LocalizedNews.builder()
+        LocalizedNewsRequest request = LocalizedNewsRequest.builder()
                 .title(TITLE)
                 .brief(BRIEF)
                 .content(CONTENT)
                 .date(LocalDate.now())
-                .language(language)
                 .build();
 
-        newsService.updateNews(localizedNewsMapper.localizedNewsToDto(localizedNews), EXISTING_NEWS_ID);
+        newsService.updateNews(request, EXISTING_NEWS_ID);
 
         LocalizedNews databaseNews = newsService.getNewsById(EXISTING_NEWS_ID).get();
         assertEquals(TITLE, databaseNews.getTitle());
@@ -115,18 +114,15 @@ class NewsServiceImplTest extends BaseIntegrationTest {
 
     @Test
     void updateNews_NewsWithSuchIdNotExist_ThrowsException() {
-        Language language = new Language(EXISTING_LANGUAGE_ID);
-        LocalizedNews localizedNews = LocalizedNews.builder()
+        LocalizedNewsRequest request = LocalizedNewsRequest.builder()
                 .title(TITLE)
                 .brief(BRIEF)
                 .content(CONTENT)
                 .date(LocalDate.now())
-                .language(language)
                 .build();
 
-
         assertThrows(NewsNotFoundException.class, () ->
-                newsService.updateNews(localizedNewsMapper.localizedNewsToDto(localizedNews), NON_EXISTING_LOCALIZED_NEWS_ID));
+                newsService.updateNews(request, NON_EXISTING_LOCALIZED_NEWS_ID));
     }
 
     @Test

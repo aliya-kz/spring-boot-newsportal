@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.zhumagulova.springbootnewsportal.dao.UserRepo;
-import org.zhumagulova.springbootnewsportal.model.UserDetailsImpl;
-import org.zhumagulova.springbootnewsportal.model.User;
+import org.zhumagulova.springbootnewsportal.entity.UserDetailsImpl;
+import org.zhumagulova.springbootnewsportal.entity.User;
 
 import java.util.Optional;
 

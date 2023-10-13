@@ -1,4 +1,4 @@
-package org.zhumagulova.springbootnewsportal.dto;
+package org.zhumagulova.springbootnewsportal.api.model;
 
 import lombok.Data;
 import lombok.Getter;

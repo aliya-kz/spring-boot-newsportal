@@ -1,7 +1,7 @@
 package org.zhumagulova.springbootnewsportal.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.zhumagulova.springbootnewsportal.model.NewsSource;
+import org.zhumagulova.springbootnewsportal.entity.NewsSource;
 
 import java.util.Optional;
 

@@ -1,8 +1,8 @@
-package org.zhumagulova.springbootnewsportal.dto;
+package org.zhumagulova.springbootnewsportal.api.model;
 
 import lombok.Data;
 import lombok.Getter;
-import org.zhumagulova.springbootnewsportal.model.User;
+import org.zhumagulova.springbootnewsportal.entity.User;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;

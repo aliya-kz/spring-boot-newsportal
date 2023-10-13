@@ -6,8 +6,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zhumagulova.springbootnewsportal.dao.UserRepo;
-import org.zhumagulova.springbootnewsportal.model.Role;
-import org.zhumagulova.springbootnewsportal.model.User;
+import org.zhumagulova.springbootnewsportal.entity.Role;
+import org.zhumagulova.springbootnewsportal.entity.User;
 
 import java.util.HashSet;
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package org.zhumagulova.springbootnewsportal.model;
+package org.zhumagulova.springbootnewsportal.entity;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

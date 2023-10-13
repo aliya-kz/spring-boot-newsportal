@@ -8,7 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.zhumagulova.springbootnewsportal.model.Role;
+import org.zhumagulova.springbootnewsportal.entity.Role;
 import org.zhumagulova.springbootnewsportal.service.UserDetailsServiceImpl;
 
 import javax.annotation.PostConstruct;

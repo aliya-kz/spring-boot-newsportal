@@ -1,7 +1,7 @@
 package org.zhumagulova.springbootnewsportal.service;
 
 
-import org.zhumagulova.springbootnewsportal.model.Language;
+import org.zhumagulova.springbootnewsportal.entity.Language;
 
 import java.util.Optional;
 

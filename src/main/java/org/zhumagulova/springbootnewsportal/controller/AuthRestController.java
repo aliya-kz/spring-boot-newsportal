@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.zhumagulova.springbootnewsportal.dto.AuthenticationRequest;
-import org.zhumagulova.springbootnewsportal.dto.RegistrationRequest;
+import org.zhumagulova.springbootnewsportal.api.model.AuthenticationRequest;
+import org.zhumagulova.springbootnewsportal.api.model.RegistrationRequest;
 import org.zhumagulova.springbootnewsportal.exception.PasswordIncorrectException;
 import org.zhumagulova.springbootnewsportal.exception.UserNotFoundException;
-import org.zhumagulova.springbootnewsportal.model.response.AuthenticationResponse;
-import org.zhumagulova.springbootnewsportal.model.User;
+import org.zhumagulova.springbootnewsportal.api.model.response.AuthenticationResponse;
+import org.zhumagulova.springbootnewsportal.entity.User;
 import org.zhumagulova.springbootnewsportal.security.jwt.JwtTokenProvider;
 import org.zhumagulova.springbootnewsportal.service.UserService;
 
