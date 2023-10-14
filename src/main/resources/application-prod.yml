@@ -23,17 +23,13 @@ spring:
     hibernate:
       ddl-auto: validate
     show-sql: true
-  kafka:
-    bootstrap-servers: kafka:9092
-    consumer:
-      group-id: tengri-news-group
 
 
 logging:
   level:
     root: debug
     org.springframework.web: debug
-    org.apache.kafka: debug
+
     org:
       hibernate:
         type:
